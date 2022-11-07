@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  web:
+    build: ./notifier
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/notifier
+    ports:
+      - '8000:8000'
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:5.7
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_DATABASE: 'db_django'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+      timeout: 3s
+      retries: 10
+    restart: always
+    volumes:
+      - ./db_django:/var/lib/mysql
+
+  frontend-app-notifier:
+    build: ./frontend-app-notifier
+    ports:
+      - '3000:3000'
+    restart: always
+    volumes:
+      - ./frontend-app-notifier:/app
+    networks:
+      default:
+        aliases:
+          - frontend-app-notifier
+    depends_on:
+      - web
