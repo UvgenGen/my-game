@@ -23,26 +23,32 @@ function Message(context) {
   )
 }
 
-export default function Home(context) {
-  const { posts } = context
-  const [postsList, setPosts] = useState(posts);
+export default function Home() {
+  const [postsList, setPosts] = useState([]);
   const [post, setPost] = useState('');
-  console.log(context);
-  console.log('context');
-  console.log(postsList);
+
+  useEffect(()=>{
+    const fetchData = async () => {
+      const res = await fetch(`http://localhost:8000/api/posts/`);
+      const posts = await res.json();
+      setPosts(posts);
+    }
+    fetchData().catch(console.error);
+  },[])
 
   const changePostHandler = (e) => {
     setPost(e.target.value);
   }
 
   const submitPost = (e) => {
-    // const newPostsList = postsList.concat({
-    //   name: 'Martha',
-    //   img: 'https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(4).webp',
-    //   message: post,
-    //   date: '12.10.2022 13:22',
-    // });
-    // setPosts(newPostsList);
+    postsList.unshift({
+      user:{
+        user: 'Ugen',
+        profile_image_url: 'https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(4).webp',
+      },
+      message: post,
+      publish_date: '12.10.2022 13:22',
+    });
     setPost('');
   };
 
@@ -65,7 +71,7 @@ export default function Home(context) {
                 />
                 <button
                   type="button"
-                  class="btn btn-outline-dark mt-2"
+                  className="btn btn-outline-dark mt-2"
                   onClick={submitPost}
                 >
                   + Add a message
@@ -80,16 +86,4 @@ export default function Home(context) {
       </div>
     </>
   )
-}
-
-
-export async function getServerSideProps() {
-  const res = await fetch(`http://web-notifier:8000/api/posts/`);
-  const posts = await res.json();
-
-  return {
-    props: {
-      posts
-    }
-  }
 }
