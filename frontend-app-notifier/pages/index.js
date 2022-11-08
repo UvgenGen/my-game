@@ -10,7 +10,7 @@ function Message(context) {
 
         <div className="d-flex justify-content-between">
           <div className="d-flex flex-row align-items-center">
-            <img src={user.profile_image} alt="avatar" width="25"
+            <img src={user.profile_image_url} alt="avatar" width="25"
               height="25" />
             <p className="small mb-0 ms-2">{user.user}</p>
           </div>
