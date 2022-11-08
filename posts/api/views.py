@@ -1,13 +1,13 @@
-from posts.api.serializers import PostSerializer, UserProfileSerializer
-from posts.models import Post, UserProfile
-from rest_framework import generics, status
+from django.contrib.auth.models import User
+from posts.api.serializers import PostSerializer, UserSerializer
+from posts.models import Post
+from rest_framework import generics
 from rest_framework.permissions import IsAdminUser, IsAuthenticatedOrReadOnly
-from rest_framework.response import Response
-from rest_framework.fields import CurrentUserDefault
+
 
 class UserProfileList(generics.ListCreateAPIView):
-    queryset = UserProfile.objects.all()
-    serializer_class = UserProfileSerializer
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
     permission_classes = [IsAdminUser]
 
 
@@ -16,15 +16,6 @@ class PostList(generics.ListCreateAPIView):
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
-    def create(self, request, *args, **kwargs):
-        data = request.data.copy()
-        print('!!!!!!!!!!!!!s')
-        data.update({
-            'user': request.user.id
-        })
-        print(data)
-        serializer = self.get_serializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+

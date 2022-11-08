@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie';
 import { useEffect, useState } from "react";
 
 
@@ -12,7 +13,7 @@ function Message(context) {
           <div className="d-flex flex-row align-items-center">
             <img src={user.profile_image_url} alt="avatar" width="25"
               height="25" />
-            <p className="small mb-0 ms-2">{user.user}</p>
+            <p className="small mb-0 ms-2">{user.username}</p>
           </div>
           <div className="d-flex flex-row align-items-center">
             <p className="small text-muted mb-0">{date}</p>
@@ -41,15 +42,21 @@ export default function Home() {
   }
 
   const submitPost = (e) => {
-    postsList.unshift({
-      user:{
-        user: 'Ugen',
-        profile_image_url: 'https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(4).webp',
-      },
-      message: post,
-      publish_date: '12.10.2022 13:22',
-    });
-    setPost('');
+    const savePost = async (newPost) => {
+      const res = await fetch("http://localhost:8000/api/posts/",
+      {
+          headers: {
+            'X-CSRFToken': Cookies.get('csrftoken'),
+            'Content-Type': 'application/json'
+          },
+          method: "POST",
+          body: JSON.stringify({'message': newPost})
+      })
+      const post = await res.json();
+      postsList.unshift(post);
+      setPost('');
+    }
+    savePost(post);
   };
 
   return (

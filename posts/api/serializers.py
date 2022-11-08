@@ -1,22 +1,24 @@
-from posts.models import Post, UserProfile
+from posts.models import Post
+from django.contrib.auth.models import User
 from rest_framework import serializers
 
 
-class UserProfileSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(read_only=True)
+class UserSerializer(serializers.ModelSerializer):
     profile_image_url = serializers.SerializerMethodField()
 
     class Meta:
-        model = UserProfile
-        fields = ['id', 'profile_image_url', 'user']
+        model = User
+        fields = ['id', 'profile_image_url', 'username']
 
-    def get_profile_image_url(self, user_profile):
-        profile_image_url = user_profile.profile_image.url
+    def get_profile_image_url(self, user):
+        profile_image_url=''
+        if hasattr(user, 'userprofile'):
+            profile_image_url = user.userprofile.profile_image.url
         return profile_image_url
 
 
 class PostSerializer(serializers.ModelSerializer):
-    user = UserProfileSerializer()
+    user = UserSerializer(read_only=True)
     publish_date = serializers.SerializerMethodField()
 
     class Meta:
