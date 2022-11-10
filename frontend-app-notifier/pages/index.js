@@ -1,5 +1,8 @@
 import Cookies from 'js-cookie';
 import { useEffect, useState } from "react";
+import io from 'Socket.IO-client'
+
+let socket
 
 
 function Message(context) {
@@ -11,7 +14,7 @@ function Message(context) {
 
         <div className="d-flex justify-content-between">
           <div className="d-flex flex-row align-items-center">
-            <img src={user.profile_image_url} alt="avatar" width="25"
+            <img src={user?.profile_image_url} alt="avatar" width="25"
               height="25" />
             <p className="small mb-0 ms-2">{user.username}</p>
           </div>
@@ -24,26 +27,39 @@ function Message(context) {
   )
 }
 
-export default function Home() {
-  const [postsList, setPosts] = useState([]);
+export default function Home(context) {
+  const { posts } = context
+  const [postsList, setPosts] = useState(posts);
   const [post, setPost] = useState('');
 
-  useEffect(()=>{
-    const fetchData = async () => {
-      const res = await fetch(`http://localhost:8000/api/posts/`);
-      const posts = await res.json();
-      setPosts(posts);
+  useEffect(() => {
+    const socketInitializer = async () => {
+      await fetch('http://localhost:3000/api/socket');
+      socket = io('http://localhost:3000');
+  
+      socket.on('connect', () => {
+        console.log('connected');
+      });
+      socket.on('update-posts', res => {
+        addPost(res);
+      });
     }
-    fetchData().catch(console.error);
-  },[])
+    socketInitializer();
+  }, [])
+
+  const addPost = (post) => {
+      console.log(postsList);
+      setPosts([post].concat(postsList));
+      posts.unshift(post);
+  }
 
   const changePostHandler = (e) => {
     setPost(e.target.value);
   }
 
-  const submitPost = (e) => {
+  const submitPostHandler = (e) => {
     const savePost = async (newPost) => {
-      const res = await fetch("http://localhost:8000/api/posts/",
+      await fetch("http://localhost:8000/api/posts/",
       {
           headers: {
             'X-CSRFToken': Cookies.get('csrftoken'),
@@ -52,11 +68,14 @@ export default function Home() {
           method: "POST",
           body: JSON.stringify({'message': newPost})
       })
-      const post = await res.json();
-      postsList.unshift(post);
-      setPost('');
+      .then((response) => response.json())
+      .then((data) => {
+        socket.emit('post-add', data);
+      addPost(data);
+      });
     }
     savePost(post);
+    setPost('');
   };
 
   return (
@@ -79,13 +98,13 @@ export default function Home() {
                 <button
                   type="button"
                   className="btn btn-outline-dark mt-2"
-                  onClick={submitPost}
+                  onClick={submitPostHandler}
                 >
                   + Add a message
                 </button>
               </div>
 
-              { postsList.map((post)=>Message(post))}
+              { postsList?.map((post)=>Message(post))}
 
             </div>
           </div>
@@ -93,4 +112,11 @@ export default function Home() {
       </div>
     </>
   )
+}
+
+
+export async function getServerSideProps() {
+  const res = await fetch(`http://web-notifier:8000/api/posts/`);
+  const posts = await res.json();
+  return { props: { posts } }
 }
