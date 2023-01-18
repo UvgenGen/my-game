@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-8!_9z6utv5nq%5gh!vl304aerp1)^@*jc3@tv6w-c^%1o06rok
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['web-notifier', 'localhost']
+ALLOWED_HOSTS = ['*', 'web-notifier', 'localhost']
 
 
 # Application definition
@@ -43,6 +43,10 @@ INSTALLED_APPS = [
     'django_nextjs',
 
     'posts',
+    'users',
+    'notifier',
+
+    'bootstrap5',
 ]
 
 MIDDLEWARE = [
@@ -135,8 +139,8 @@ MEDIA_URL = '/media/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 NEXTJS_SETTINGS = {
-        "nextjs_server_url": "http://frontend-app-notifier:3000",
-    }
+    "nextjs_server_url": "http://frontend-app-notifier:3000",
+}
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
@@ -145,3 +149,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ]
 }
+
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/login'
+LOGOUT_REDIRECT_URL = '/login'

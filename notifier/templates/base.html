@@ -1,0 +1,18 @@
+{% extends "django_nextjs/document_base.html" %}
+{% load static %}
+
+
+{% block head %}
+  <link rel="stylesheet" href="{% static 'css/header.css' %}">
+  {{ block.super }}
+{% endblock %}
+
+
+{% block body %}
+  {% if user.is_authenticated %}
+    {% include "header_authorized.html" %}
+  {% else %}
+    {% include "header.html" %}
+  {% endif %}
+  {{ block.super }}
+{% endblock %}

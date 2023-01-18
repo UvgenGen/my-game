@@ -6,7 +6,7 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head />
-        <body id="__django_nextjs_body" className="container">
+        <body id="__django_nextjs_body" className="bg-white dark:bg-gray-900">
           <div id="__django_nextjs_body_begin" />
           <Main />
           <NextScript />
