@@ -6,4 +6,4 @@ from django.conf import settings
 @login_required
 def index(request):
     context = {}
-    return render_nextjs_page_sync(request, "base.html", context=context)
+    return render_nextjs_page_sync(request, "base_next.html", context=context)

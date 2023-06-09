@@ -43,10 +43,8 @@ INSTALLED_APPS = [
     'django_nextjs',
 
     'posts',
-    'users',
+    'registration',
     'notifier',
-
-    'bootstrap5',
 ]
 
 MIDDLEWARE = [
