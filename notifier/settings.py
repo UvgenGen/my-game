@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'registration',
     'notifier',
     'game',
+    'user_profile',
 ]
 
 MIDDLEWARE = [

@@ -1,22 +1,52 @@
+import Cookies from 'js-cookie';
 import React, { useState } from 'react';
 
 const GameForm = () => {
   const [title, setTitle] = useState('');
   const [file, setFile] = useState(null);
-  const [userCount, setUserCount] = useState('');
+  const [userCount, setUserCount] = useState(2);
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Perform form submission or API call with the form data
     // For example:
     const formData = {
-      title,
-      file,
-      userCount,
-      password,
+      title: title,
+      data: {test: 123},
+      max_player_count: userCount,
+      password: password,
     };
+
+    try {
+      const response = await fetch('http://localhost:8000/game/api/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': Cookies.get('csrftoken')
+        },
+        body: JSON.stringify(formData)
+      });
+      if (response.ok) {
+        // Request was successful
+        const data = await response.json();
+        console.log('New game created:', data);
+        // Reset form fields
+        setFormData({
+          title: '',
+          password: '',
+          max_player_count: 0,
+          data: {}
+        });
+      } else {
+        // Request failed
+        console.error('Error:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+
     console.log(formData);
   };
 
@@ -35,7 +65,7 @@ const GameForm = () => {
           id="title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="mt-1 px-4 py-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-white"
+          className="mt-1 px-4 py-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
         />
       </div>
       <div className="mb-4">
@@ -71,11 +101,11 @@ const GameForm = () => {
           Password for Game Room
         </label>
         <input
-          type="password"
+          type="text"
           id="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="mt-1 px-4 py-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-white"
+          className="mt-1 px-4 py-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
         />
       </div>
       <button

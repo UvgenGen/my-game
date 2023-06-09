@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 class Game(models.Model):
     title = models.CharField(max_length=25)
     password = models.CharField(max_length=15)
-    data = models.JSONField(default={})
+    data = models.JSONField(default=dict)
     max_player_count = models.IntegerField(
         validators=[
             MaxValueValidator(100),

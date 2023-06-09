@@ -16,9 +16,10 @@ urlpatterns = [
     path('', index, name='index'),
 
     re_path(r'^game/', include('game.urls')),
+    path('posts/', include('posts.urls')),
+    path('profiles/', include('user_profile.urls')),
 
     path('api-auth/', include('rest_framework.urls')),
-    path('api/', include('posts.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
