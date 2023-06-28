@@ -10,6 +10,8 @@ help:
 	@echo "  frontend-logs     Show logs from the running frontend containers"
 	@echo "  help              Show this help message"
 
+requirements:
+	pip install -r mygame/requirements.txt
 
 build:
 	@docker-compose build
@@ -27,10 +29,10 @@ clean:
 	@docker-compose down --volumes --remove-orphans
 
 backend-logs:
-	docker logs -f --tail 100 notifier_web_1
+	docker logs -f --tail 100 mygame_web_1
 
 frontend-logs:
-	docker logs -f --tail 100 notifier_frontend-app-notifier_1
+	docker logs -f --tail 100 mygame_frontend-app-mygame_1
 
 backend-shell:
-	docker exec -it notifier_web_1 bash
+	docker exec -it mygame_web_1 bash

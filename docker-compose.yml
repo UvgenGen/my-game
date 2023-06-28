@@ -2,16 +2,16 @@ version: '3'
 
 services:
   web:
-    build: ./notifier
+    build: ./mygame
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - .:/notifier
+      - .:/mygame
     ports:
       - '8000:8000'
     networks:
       default:
         aliases:
-          - web-notifier
+          - web-mygame
     depends_on:
       db:
         condition: service_healthy
@@ -33,16 +33,16 @@ services:
     volumes:
       - ./db_django:/var/lib/mysql
 
-  frontend-app-notifier:
-    build: ./frontend-app-notifier
+  frontend-app-mygame:
+    build: ./frontend-app-mygame
     ports:
       - '3000:3000'
     restart: always
     volumes:
-      - ./frontend-app-notifier:/app
+      - ./frontend-app-mygame:/app
     networks:
       default:
         aliases:
-          - frontend-app-notifier
+          - frontend-app-mygame
     depends_on:
       - web

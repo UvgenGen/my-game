@@ -11,8 +11,8 @@ export default function Header() {
               </a>
             </li>
             <li>
-              <a href="#" className="hover:text-gray-400">
-                About
+              <a href="/logout/" className="hover:text-gray-400">
+                Logout
               </a>
             </li>
           </ul>
