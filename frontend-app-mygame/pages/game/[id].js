@@ -1,11 +1,8 @@
 import Chat from '../../components/chat';
-import { useRouter } from 'next/router';
 
 
 export default function Game(context) {
-  const { posts } = context;
-  const router = useRouter();
-  const { id } = router.query;
+  const { posts, id } = context;
 
   return (
     <>
@@ -13,15 +10,15 @@ export default function Game(context) {
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">game {id}</h2>
         </div>
-        <Chat posts={posts}/>
+        <Chat posts={posts} room={id}/>
       </div>
     </>
   )
 }
 
 
-export async function getServerSideProps() {
-  const res = await fetch(`http://web:8000/chat/api/`);
+export async function getServerSideProps({ params }) {
+  const res = await fetch(`http://web:8000/chat/api/?room=${params.id}`);
   const posts = await res.json();
-  return { props: { posts } }
+  return { props: { posts, id: params.id } }
 }

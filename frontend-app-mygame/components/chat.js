@@ -4,19 +4,12 @@ import Message from './message';
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 
 
-export default function Chat(context) {
-  const { posts } = context;
+export default function Chat(props) {
+  const { posts, room } = props;
   const [postsList, setPosts] = useState(posts);
   const [post, setPost] = useState('');
 
-  const state = {
-    filledForm: false,
-    messages: [],
-    value: '',
-    name: '',
-    room: 'test',
-  }
-  const client = new W3CWebSocket('ws://localhost:8000/ws/' + state.room + '/');
+  const client = new W3CWebSocket('ws://localhost:8000/ws/' + room + '/');
 
   useEffect(() => {
     client.onopen = () => {
@@ -25,7 +18,7 @@ export default function Chat(context) {
     client.onmessage = (message) => {
       const dataFromServer = JSON.parse(message.data);
       if (dataFromServer) {
-        console.log(dataFromServer)
+        addPost(dataFromServer.message);
       }
     };
   }, [])
@@ -49,25 +42,22 @@ export default function Chat(context) {
             'Content-Type': 'application/json'
           },
           method: "POST",
-          body: JSON.stringify({'message': newPost})
+          body: JSON.stringify({'message': newPost, 'game': room})
       })
       .then((response) => response.json())
       .then((data) => {
         client.send(
           JSON.stringify({
             type: "message",
-            text: 'test',
-            sender: 'test',
+            message: data,
           })
         );
-    
-        addPost(data);
       });
-    }
+    };
     if (post.length) {
       savePost(post);
       setPost('');
-    }
+    };
   };
 
   return (
