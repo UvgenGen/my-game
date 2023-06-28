@@ -49,9 +49,9 @@ const GameForm = () => {
 
   return (
     <>
-      <div class="container mx-auto px-4">
-        <div class="flex flex-col items-center justify-center h-screen">
-          <h1 class="text-4xl mb-8 text-white">Create Game</h1>
+      <div className="container mx-auto px-4">
+        <div className="flex flex-col items-center justify-center h-screen">
+          <h1 className="text-4xl mb-8 text-white">Create Game</h1>
           <form onSubmit={handleSubmit}>
       <div className="mb-4">
         <label htmlFor="title" className="block text-sm font-medium text-white">

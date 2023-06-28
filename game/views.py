@@ -9,8 +9,7 @@ def index(request):
 
 @login_required
 def game(request, id):
-    context = {'id': id}
-    return render_nextjs_page_sync(request, "base_next.html", context=context)
+    return render_nextjs_page_sync(request, "base_next.html")
 
 
 @login_required

@@ -1,9 +1,7 @@
 import Cookies from 'js-cookie';
 import { useEffect, useState } from "react";
-import io from 'Socket.IO-client';
 import Message from './message';
-
-let socket;
+import { w3cwebsocket as W3CWebSocket } from "websocket";
 
 
 export default function Chat(context) {
@@ -11,19 +9,25 @@ export default function Chat(context) {
   const [postsList, setPosts] = useState(posts);
   const [post, setPost] = useState('');
 
+  const state = {
+    filledForm: false,
+    messages: [],
+    value: '',
+    name: '',
+    room: 'test',
+  }
+  const client = new W3CWebSocket('ws://localhost:8000/ws/' + state.room + '/');
+
   useEffect(() => {
-    const socketInitializer = async () => {
-      await fetch('http://localhost:3000/api/socket');
-      socket = io('http://localhost:3000');
-  
-      socket.on('connect', () => {
-        console.log('connected');
-      });
-      socket.on('update-posts', res => {
-        addPost(res);
-      });
-    }
-    socketInitializer();
+    client.onopen = () => {
+      console.log("WebSocket Client Connected");
+    };
+    client.onmessage = (message) => {
+      const dataFromServer = JSON.parse(message.data);
+      if (dataFromServer) {
+        console.log(dataFromServer)
+      }
+    };
   }, [])
 
   const addPost = (post) => {
@@ -49,7 +53,14 @@ export default function Chat(context) {
       })
       .then((response) => response.json())
       .then((data) => {
-        socket.emit('post-add', data);
+        client.send(
+          JSON.stringify({
+            type: "message",
+            text: 'test',
+            sender: 'test',
+          })
+        );
+    
         addPost(data);
       });
     }
