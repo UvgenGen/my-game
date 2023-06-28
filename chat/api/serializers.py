@@ -1,9 +1,9 @@
 from rest_framework import serializers
 
 from user_profile.api.serializers import UserSerializer
-from posts.models import Post
+from chat.models import Post
 
-class PostSerializer(serializers.ModelSerializer):
+class chaterializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
     publish_date = serializers.SerializerMethodField()
 

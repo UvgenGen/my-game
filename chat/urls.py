@@ -1,5 +1,5 @@
 from django.urls import path
-from posts.api.views import PostList
+from chat.api.views import PostList
 
 
 urlpatterns = [

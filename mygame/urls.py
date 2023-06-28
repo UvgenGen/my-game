@@ -16,7 +16,7 @@ urlpatterns = [
     path('', index, name='index'),
 
     re_path(r'^game/', include('game.urls')),
-    path('posts/', include('posts.urls')),
+    path('chat/', include('chat.urls')),
     path('profiles/', include('user_profile.urls')),
 
     path('api-auth/', include('rest_framework.urls')),

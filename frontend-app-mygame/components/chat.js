@@ -38,7 +38,7 @@ export default function Chat(context) {
 
   const submitPostHandler = (e) => {
     const savePost = async (newPost) => {
-      await fetch("http://localhost:8000/posts/api/",
+      await fetch("http://localhost:8000/chat/api/",
       {
           headers: {
             'X-CSRFToken': Cookies.get('csrftoken'),

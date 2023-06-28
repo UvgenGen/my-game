@@ -21,7 +21,7 @@ export default function Game(context) {
 
 
 export async function getServerSideProps() {
-  const res = await fetch(`http://web:8000/posts/api/`);
+  const res = await fetch(`http://web:8000/chat/api/`);
   const posts = await res.json();
   return { props: { posts } }
 }

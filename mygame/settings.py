@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_nextjs',
 
-    'posts',
+    'chat',
     'registration',
     'mygame',
     'game',

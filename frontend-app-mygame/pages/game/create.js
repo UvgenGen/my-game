@@ -1,4 +1,5 @@
 import Cookies from 'js-cookie';
+import {useRouter} from 'next/router'
 import React, { useState } from 'react';
 
 const GameForm = () => {
@@ -6,6 +7,7 @@ const GameForm = () => {
   const [file, setFile] = useState(null);
   const [userCount, setUserCount] = useState(2);
   const [password, setPassword] = useState('');
+  const router = useRouter()
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,13 +34,8 @@ const GameForm = () => {
         // Request was successful
         const data = await response.json();
         console.log('New game created:', data);
-        // Reset form fields
-        setFormData({
-          title: '',
-          password: '',
-          max_player_count: 0,
-          data: {}
-        });
+        router.push(`/game/${data.id}`);
+
       } else {
         // Request failed
         console.error('Error:', response.statusText);

@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
-from posts.api.serializers import PostSerializer, UserSerializer
-from posts.models import Post
+from chat.api.serializers import chaterializer, UserSerializer
+from chat.models import Post
 from rest_framework import generics
 from rest_framework.permissions import IsAdminUser, IsAuthenticatedOrReadOnly
 
@@ -13,7 +13,7 @@ class UserProfileList(generics.ListCreateAPIView):
 
 class PostList(generics.ListCreateAPIView):
     queryset = Post.objects.all().order_by('-publish_date')
-    serializer_class = PostSerializer
+    serializer_class = chaterializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
