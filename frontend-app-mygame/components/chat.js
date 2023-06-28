@@ -63,23 +63,28 @@ export default function Chat(props) {
   return (
     <>
       <div className="mb-6">
-          <div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-            <label htmlFor="comment" className="sr-only">Your comment</label>
-            <textarea id="comment" rows="6"
-              className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
-              placeholder="Write a comment..."
-              value={post}
-              onChange={changePostHandler}
-            ></textarea>
-          </div>
-          <button type="submit"
-            className="text-gray-300 bg-gray-800 hover:bg-gray-600 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-            onClick={submitPostHandler}
-          >
-            Post comment
-          </button>
+        <div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+          <label htmlFor="comment" className="sr-only">Your comment</label>
+          <input
+            id="comment"
+            type="text"
+            className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
+            placeholder="Write a comment..."
+            value={post}
+            onChange={changePostHandler}
+          />
+        </div>
+        <button
+          type="submit"
+          className="text-gray-300 bg-gray-800 hover:bg-gray-600 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+          onClick={submitPostHandler}
+        >
+          Send
+        </button>
       </div>
-      { postsList?.map((post)=>Message(post))}
+      <div className="max-h-96 overflow-y-scroll">
+        {postsList?.map((post) => Message(post))}
+      </div>
     </>
   )
 }
