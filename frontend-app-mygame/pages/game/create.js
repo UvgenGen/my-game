@@ -7,7 +7,7 @@ const GameForm = () => {
   const [file, setFile] = useState(null);
   const [userCount, setUserCount] = useState(2);
   const [password, setPassword] = useState('');
-  const router = useRouter()
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,8 +43,6 @@ const GameForm = () => {
     } catch (error) {
       console.error('Error:', error);
     }
-
-    console.log(formData);
   };
 
   return (
