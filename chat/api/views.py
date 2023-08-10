@@ -1,8 +1,9 @@
 from django.contrib.auth.models import User
-from chat.api.serializers import MessageSerializer, UserSerializer
-from chat.models import Message
 from rest_framework import generics
 from rest_framework.permissions import IsAdminUser, IsAuthenticatedOrReadOnly
+
+from chat.api.serializers import MessageSerializer, UserSerializer
+from chat.models import Message
 
 
 class UserProfileList(generics.ListCreateAPIView):

@@ -1,5 +1,5 @@
-from django_nextjs.render import render_nextjs_page_sync
 from django.contrib.auth.decorators import login_required
+from django_nextjs.render import render_nextjs_page_sync
 
 
 @login_required

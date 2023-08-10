@@ -1,7 +1,8 @@
 from rest_framework import serializers
 
-from user_profile.api.serializers import UserSerializer
 from chat.models import Message
+from user_profile.api.serializers import UserSerializer
+
 
 class MessageSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)

@@ -8,7 +8,6 @@ from django.urls import include, path, re_path
 
 from .views import index
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('django_nextjs.urls')),

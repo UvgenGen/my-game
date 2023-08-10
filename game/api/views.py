@@ -1,6 +1,8 @@
 from rest_framework import generics
-from game.models import Game
+
 from game.api.serializers import GameSerializer
+from game.models import Game
+
 
 class GameAPIView(generics.ListCreateAPIView):
     queryset = Game.objects.all()
