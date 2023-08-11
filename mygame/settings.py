@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'django_nextjs',
+    'drf_yasg',
 
     'chat',
     'registration',
