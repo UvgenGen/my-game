@@ -11,33 +11,28 @@ const GameForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(file);
 
-    // Perform form submission or API call with the form data
-    // For example:
-    const formData = {
-      title: title,
-      data: {test: 123},
-      max_player_count: userCount,
-      password: password,
-    };
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('file', file);
+    formData.append('max_player_count', userCount);
+    formData.append('password', password);
 
     try {
       const response = await fetch('http://localhost:8000/game/api/', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
           'X-CSRFToken': Cookies.get('csrftoken')
         },
-        body: JSON.stringify(formData)
+        body: formData
       });
       if (response.ok) {
-        // Request was successful
         const data = await response.json();
         console.log('New game created:', data);
-        router.push(`/game/${data.id}`);
+        // router.push(`/game/${data.id}`);
 
       } else {
-        // Request failed
         console.error('Error:', response.statusText);
       }
     } catch (error) {

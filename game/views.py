@@ -14,7 +14,8 @@ def index(request):
 @login_required
 def game(request, game_id):
     game = get_object_or_404(Game, id=game_id)
-    if request.user in game.players.all():
+    user = request.user
+    if user.id in game.players.all().values_list('user', flat=True) or user == game.creator:
         return render_nextjs_page_sync(request, "base_next.html")
     return redirect(reverse('join-game', kwargs={'game_id': game_id}))
 
