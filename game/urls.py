@@ -1,6 +1,5 @@
-from django.urls import path, re_path
+from django.urls import include, path, re_path
 
-from game.api.views import GameAPIView, JoinGameAPIView
 from game.views import create_game, game, game_list, join_game
 
 urlpatterns = [
@@ -9,6 +8,5 @@ urlpatterns = [
     path('create', create_game, name='create-game'),
     path('list', game_list, name='game-list'),
 
-    path('api/', GameAPIView.as_view(), name='create-game-api'),
-    re_path(r'api/join/(?P<game_id>\d+)$', JoinGameAPIView.as_view(), name='join-game-api'),
+    path('api/', include(('game.api.urls', 'game'))),
 ]

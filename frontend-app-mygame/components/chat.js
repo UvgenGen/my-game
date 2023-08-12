@@ -24,7 +24,6 @@ export default function Chat(props) {
   }, [])
 
   const addPost = (post) => {
-      console.log(postsList);
       setPosts([post].concat(postsList));
       posts.unshift(post);
   }
@@ -60,6 +59,12 @@ export default function Chat(props) {
     };
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      submitPostHandler();
+    }
+  };
+
   return (
     <>
       <div className="mb-6">
@@ -71,6 +76,7 @@ export default function Chat(props) {
             className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
             placeholder="Write a comment..."
             value={post}
+            onKeyPress={handleKeyPress}
             onChange={changePostHandler}
           />
         </div>
@@ -82,7 +88,7 @@ export default function Chat(props) {
           Send
         </button>
       </div>
-      <div className="max-h-96 overflow-y-scroll">
+      <div className="max-h-64 sm:max-h-96 overflow-y-scroll">
         {postsList?.map((post) => Message(post))}
       </div>
     </>

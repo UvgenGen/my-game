@@ -1,13 +1,16 @@
-.PHONY: build up down clean
+.PHONY: build up stop down clean backend-logs frontend-logs backend-shell backend-restart help
 
 help:
 	@echo "Available targets:"
 	@echo "  build             Build the Docker images"
 	@echo "  up                Create and run Docker containers"
+	@echo "  stop              Stop Docker containers"
 	@echo "  down              Stop and remove Docker containers"
 	@echo "  clean             Stop and remove Docker containers, networks, volumes, and orphaned containers"
 	@echo "  backend-logs      Show logs from the running backend containers"
 	@echo "  frontend-logs     Show logs from the running frontend containers"
+	@echo "  backend-shell     Open a shell in the backend container"
+	@echo "  backend-restart   Restart the backend container"
 	@echo "  help              Show this help message"
 
 requirements:
@@ -36,3 +39,6 @@ frontend-logs:
 
 backend-shell:
 	docker exec -it mygame_web_1 bash
+
+backend-restart:
+	@docker-compose restart web

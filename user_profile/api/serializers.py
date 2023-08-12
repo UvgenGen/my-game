@@ -10,7 +10,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'profile_image_url', 'username']
 
     def get_profile_image_url(self, user):
-        profile_image_url=''
-        if hasattr(user, 'userprofile'):
-            profile_image_url = user.userprofile.profile_image.url
+        profile_image_url = ''
+        if hasattr(user, 'profile'):
+            profile_image_url = user.profile.profile_image.url
         return profile_image_url

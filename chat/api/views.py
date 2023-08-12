@@ -23,9 +23,7 @@ class PostList(generics.ListCreateAPIView):
         by filtering against a `username` query parameter in the URL.
         """
         queryset = Message.objects.all()
-        game = int(self.request.query_params.get('room'))
-        print(game)
-        print(type(game))
+        game = int(self.request.query_params.get('game'))
         if game is not None:
             queryset = queryset.filter(game=game)
         return queryset

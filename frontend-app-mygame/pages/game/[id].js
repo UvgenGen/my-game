@@ -1,109 +1,70 @@
+import { useEffect, useState } from "react";
 import Chat from '../../components/chat';
 
 
 export default function Game(context) {
-  const { posts, id } = context;
-  const themes = [
-    {
-      name: 'theme 1',
-      questions: [100, 200, 300, 400, 500, 600, 700, 800],
-    },
-    {
-      name: 'theme 2',
-      questions: [100, 200, 300, 400, 500, 600, 700, 800],
-    },
-    {
-      name: 'theme 3',
-      questions: [100, 200, 300, 400, 500, 600, 700, 800],
-    },
-  ];
+  const { posts, game, id } = context;
+  const [activeRound, setActiveRound] = useState(0);
+  const [roundData, setRoundData] = useState([]);
+  const [roundName, setRoundName] = useState('');
+  const [players, setPlayers] = useState([]);
+
+  useEffect(() => {
+    setActiveRound(game.active_round);
+    setRoundData(game.data[activeRound]);
+    setRoundName(roundData.name);
+    setPlayers(game.players);
+  }, [])
+
 
   return (
     <div className="m-1 sm:m-5 md:m-7 h-screen">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">
-          game {id}
-        </h2>
       </div>
-      <div className="grid grid-cols-12 gap-2 mb-15">
-        <div className="col-span-12 sm:col-span-9 min-w-full h-full">
-          <div className="rounded-lg border border-gray-500 p-2 sm:p-8 h-4/6">
-            <table className="min-w-full">
-              <tbody>
-                  {themes.map((theme, themeIndex) => (
-                    <tr className="bg-gray-100 border-b" key={themeIndex}>
-                      <td className="text-xs tracking-tighter text-gray-900 font-light p-2 whitespace-nowrap">
-                        {theme.name}
-                      </td>
-                      {theme.questions.map((value, index) => (
-                        <td
-                          key={index}
-                          className="text-xs tracking-tighter text-gray-900 font-light p-2 whitespace-nowrap"
-                        >
-                          {value}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-          </div>
-          <div className="flex justify-center col-span-12 rounded-lg border border-gray-400 p-2 h-3/6 sm:h-2/6">
-            <div className="card w-1/6 h-full mx-auto bg-white shadow-xl">
-              <img className="w-2/6 mx-auto rounded-full border-white" src="https://avatars.githubusercontent.com/u/67946056?v=4" alt=""/>
-              <div className="text-center">Ajo Alex</div>
-              <div className="text-center">10000</div>
+      <div class="mx-auto grid max-w-8xl grid-cols-12 gap-4 p-1">
+        <div class="col-span-12 rounded-lg border border-gray-400 py-1">
+          {players.map((player) => (
+            <div key={player.id} className="card w-1/6 h-full mx-auto bg-white shadow-xl">
+              <img className="w-2/6 mx-auto rounded-full border-white" src={player.profile_image} alt=""/>
+              <div className="text-center">{player.username}</div>
+              <div className="text-center">{player.score}</div>
             </div>
-            <div className="card w-1/6 h-full mx-auto bg-white shadow-xl">
-              <img className="w-2/6 mx-auto rounded-full border-white" src="https://avatars.githubusercontent.com/u/67946056?v=4" alt=""/>
-              <div className="text-center">Ajo Alex</div>
-              <div className="text-center">10000</div>
-            </div>
-            <div className="card w-1/6 h-full mx-auto bg-white shadow-xl">
-              <img className="w-2/6 mx-auto rounded-full border-white" src="https://avatars.githubusercontent.com/u/67946056?v=4" alt=""/>
-              <div className="text-center">Ajo Alex</div>
-              <div className="text-center">10000</div>
-            </div>
-            <div className="card w-1/6 h-full mx-auto bg-white shadow-xl">
-              <img className="w-2/6 mx-auto rounded-full border-white" src="https://avatars.githubusercontent.com/u/67946056?v=4" alt=""/>
-              <div className="text-center">Ajo Alex</div>
-              <div className="text-center">10000</div>
-            </div>
-            <div className="card w-1/6 h-full mx-auto bg-white shadow-xl">
-              <img className="w-2/6 mx-auto rounded-full border-white" src="https://avatars.githubusercontent.com/u/67946056?v=4" alt=""/>
-              <div className="text-center">Ajo Alex</div>
-              <div className="text-center">10000</div>
-            </div>
-            <div className="card w-1/6 h-full mx-auto bg-white shadow-xl">
-              <img className="w-2/6 mx-auto rounded-full border-white" src="https://avatars.githubusercontent.com/u/67946056?v=4" alt=""/>
-              <div className="text-center">Ajo Alex</div>
-              <div className="text-center">10000</div>
-            </div>
-            <div className="card w-1/6 h-full mx-auto bg-white shadow-xl">
-              <img className="w-2/6 mx-auto rounded-full border-white" src="https://avatars.githubusercontent.com/u/67946056?v=4" alt=""/>
-              <div className="text-center">Ajo Alex</div>
-              <div className="text-center">10000</div>
-            </div>
-            <div className="card w-1/6 h-full mx-auto bg-white shadow-xl">
-              <img className="w-2/6 mx-auto rounded-full border-white" src="https://avatars.githubusercontent.com/u/67946056?v=4" alt=""/>
-              <div className="text-center">Ajo Alex</div>
-              <div className="text-center">10000</div>
-            </div>
-          </div>
+          ))}
         </div>
-
-        <div className="col-span-12 rounded-lg border border-gray-400 sm:pb-52 p-2 sm:col-span-3 h-full">
+        <div class="col-span-12 rounded-lg border border-gray-400 p-1 sm:col-span-8">
+          <table className="min-w-full">
+            <tbody>
+              {roundData?.themes?.map((theme, themeIndex) => (
+                <tr className="bg-gray-100 border-b" key={themeIndex}>
+                  <td className="text-xs tracking-tighter text-gray-900 font-light p-2 whitespace-nowrap">
+                    {theme.name}
+                  </td>
+                  {theme.questions.map((question, index) => (
+                    <td
+                      key={index}
+                      className="text-xs tracking-tighter text-gray-900 font-light p-2 whitespace-nowrap"
+                    >
+                      {question.price}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="col-span-12 rounded-lg border border-gray-400 p-1 sm:col-span-4">
           <Chat posts={posts} room={id} />
         </div>
       </div>
     </div>
-
   )
 }
 
 
 export async function getServerSideProps({ params }) {
-  const res = await fetch(`http://web:8000/chat/api/?room=${params.id}`);
-  const posts = await res.json();
-  return { props: { posts, id: params.id } }
+  const posts_response = await fetch(`http://web:8000/chat/api/?game=${params.id}`);
+  const posts = await posts_response.json();
+  const game_response = await fetch(`http://web:8000/game/api/${params.id}`);
+  const game = await game_response.json();
+  return { props: { posts, game, id: params.id} }
 }

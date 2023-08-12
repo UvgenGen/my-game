@@ -2,7 +2,8 @@ from rest_framework import authentication, generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from game.api.serializers import WriteGameListSerializer, ReadGameListSerializer
+from game.api.serializers import (GameDetailSerializer, ReadGameListSerializer,
+                                  WriteGameListSerializer)
 from game.models import Game, Player
 
 from .utils import parse_content_xml_from_zip
@@ -34,15 +35,6 @@ class JoinGameAPIView(APIView):
     authentication_classes = [authentication.SessionAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
-    def get(self, request, game_id):
-        try:
-            game = Game.objects.get(pk=game_id)
-        except Game.DoesNotExist:
-            return Response({"error": "Game not found."}, status=status.HTTP_404_NOT_FOUND)
-
-        serializer = ReadGameListSerializer(game)
-        return Response(serializer.data)
-
     def put(self, request, game_id):
         password = request.data.get('password', '')
         user = request.user
@@ -60,3 +52,8 @@ class JoinGameAPIView(APIView):
         game.players.add(player)
         game.save()
         return Response({"message": "User added to the game."}, status=status.HTTP_200_OK)
+
+
+class GameDetailView(generics.RetrieveAPIView):
+    queryset = Game.objects.all()
+    serializer_class = GameDetailSerializer
