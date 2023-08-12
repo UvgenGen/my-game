@@ -1,4 +1,4 @@
-function Message(context) {
+export default function Message(context) {
   const {id, message, user, publish_date: date} = context;
   return (
     <div className="p-6 mb-6 text-base bg-white border-t border-gray-200 dark:border-gray-700 dark:bg-gray-900" key={id}>
@@ -18,5 +18,3 @@ function Message(context) {
     </div>
   )
 }
-
-export default Message

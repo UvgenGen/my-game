@@ -6,7 +6,7 @@ export default function GameList(context) {
         <div className="container mx-auto px-4">
           <div className="flex flex-col items-center justify-center h-screen">
             <h1 className="text-4xl mb-8 text-white">Game list</h1>
-            <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
                 <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                     <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
