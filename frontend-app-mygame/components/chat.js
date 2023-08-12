@@ -66,7 +66,7 @@ export default function Chat(props) {
   };
 
   return (
-    <>
+    <div class="w-full p-4 border border-gray-200 rounded-lg shadow sm:p-8 dark:border-gray-700">
       <div className="mb-6">
         <div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
           <label htmlFor="comment" className="sr-only">Your comment</label>
@@ -88,9 +88,9 @@ export default function Chat(props) {
           Send
         </button>
       </div>
-      <div className="max-h-64 sm:max-h-96 overflow-y-scroll">
+      <div className="max-h-64 sm:max-h-76 overflow-y-scroll">
         {postsList?.map((post) => Message(post))}
       </div>
-    </>
+    </div>
   )
 }
