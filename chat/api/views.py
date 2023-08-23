@@ -25,7 +25,7 @@ class PostList(generics.ListCreateAPIView):
         queryset = Message.objects.all()
         game = int(self.request.query_params.get('game'))
         if game is not None:
-            queryset = queryset.filter(game=game)
+            queryset = queryset.filter(game=game).order_by('-publish_date')
         return queryset
 
 

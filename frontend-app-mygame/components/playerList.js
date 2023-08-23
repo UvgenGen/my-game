@@ -1,6 +1,7 @@
+import { useGameContext } from '../context/GameContext'
 
-export default function PlayerList(props) {
-  const { players } = props;
+export default function PlayerList() {
+  const { players } = useGameContext();
 
   return (
     <div className="w-full p-4 bg-white border border-gray-200 rounded-lg mb-2 shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">

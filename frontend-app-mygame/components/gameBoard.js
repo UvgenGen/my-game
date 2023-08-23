@@ -1,6 +1,7 @@
+import { useGameContext } from '../context/GameContext'
 
-export default function GameBoard(props) {
-  const { roundData } = props;
+export default function GameBoard() {
+  const { roundData } = useGameContext();
 
   return (
     <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
