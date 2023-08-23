@@ -6,7 +6,7 @@ from game.api.serializers import (GameDetailSerializer, ReadGameListSerializer,
                                   WriteGameListSerializer)
 from game.models import Game, Player
 
-from .utils import parse_content_xml_from_zip
+from .utils import parse_content_xml_from_zip, parse_and_save_files_from_zip
 
 
 class GameAPIView(generics.ListCreateAPIView):
@@ -26,8 +26,10 @@ class GameAPIView(generics.ListCreateAPIView):
             return WriteGameListSerializer
 
     def perform_create(self, serializer):
-        data = parse_content_xml_from_zip(self.request.data.get('file'))
-        serializer.save(creator=self.request.user, data=data)
+        file = self.request.data.get('file')
+        data = parse_content_xml_from_zip(file)
+        instance = serializer.save(creator=self.request.user, data=data)
+        parse_and_save_files_from_zip(file, instance.id)
 
 
 class JoinGameAPIView(APIView):

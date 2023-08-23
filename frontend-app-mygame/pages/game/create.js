@@ -30,7 +30,7 @@ const GameForm = () => {
       if (response.ok) {
         const data = await response.json();
         console.log('New game created:', data);
-        // router.push(`/game/${data.id}`);
+        router.push(`/game/${data.id}`);
 
       } else {
         console.error('Error:', response.statusText);
@@ -100,7 +100,7 @@ const GameForm = () => {
       </div>
       <button
         type="submit"
-        className="bg-indigo-500 text-white py-2 px-4 rounded hover:bg-indigo-600"
+        className="border-2 border-blue-600 rounded-lg px-3 py-2 text-blue-400 cursor-pointer hover:bg-blue-600 hover:text-blue-200"
       >
         Create Game
       </button>

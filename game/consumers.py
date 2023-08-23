@@ -2,6 +2,7 @@ import json
 
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
+from .models import Game
 
 
 class ChatConsumer(WebsocketConsumer):
@@ -66,6 +67,7 @@ class GameConsumer(WebsocketConsumer):
         )
 
     def show_question(self, event):
-        self.send(text_data=json.dumps({
-            'question_id': 'test',
-        }))
+        # Send message to WebSocket
+        data = event
+        data['state'] = 'showing_question'
+        self.send(text_data=json.dumps(event))

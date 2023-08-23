@@ -1,6 +1,7 @@
 import Chat from '../../components/chat';
 import GameBoard from '../../components/gameBoard';
 import PlayerList from '../../components/playerList';
+import GameBar from '../../components/gameBar';
 import { GameProvider, useGameContext } from '../../context/GameContext'
 
 
@@ -14,6 +15,7 @@ function Game() {
           <GameBoard/>
         </div>
         <div className="col-span-12 sm:col-span-4">
+          <GameBar/>
           <PlayerList/>
           <Chat gameId={gameId} />
         </div>

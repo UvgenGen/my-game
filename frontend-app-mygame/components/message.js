@@ -11,7 +11,6 @@ export default function Message({ post }) {
                   alt={user.username}/>
                 {user.username}
               </p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">{date}</p>
           </div>
       </footer>
       <p className="text-gray-500 dark:text-gray-400" dangerouslySetInnerHTML={{__html: message.replace(/\n/g, "<br />")}}/>
