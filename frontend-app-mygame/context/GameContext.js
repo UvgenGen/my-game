@@ -9,88 +9,58 @@ export function useGameContext() {
 
 export function GameProvider({ children, gameId }) {
   const [activeRound, setActiveRound] = useState(0);
+  const [activeThemeId, setActiveThemeId] = useState();
+  const [activeQuestionId, setActiveQuestionId] = useState();
   const [roundData, setRoundData] = useState([]);
-  const [questionData, setQuestionData] = useState({});
   const [players, setPlayers] = useState([]);
   const [gameState, setGameState] = useState();
   const [gameData, setGameData] = useState([]);
   const [userId, setUserId] = useState({});
-  const [creatorId, setCreatorId] = useState({});
-  const [isCreator, setIsCreator] = useState({});
+  const [isCreator, setIsCreator] = useState(false);
 
   const client = new W3CWebSocket('ws://localhost:8000/ws/game/' + gameId + '/');
 
   useEffect(() => {
     const fetchGameData = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/game/api/${gameId}`);
-        const game = await response.json();
-        setActiveRound(game.active_round);
-        setRoundData(game.data[game.active_round]);
-        setPlayers(game.players);
-        setGameState(game.state);
-        setGameData(game.data);
-        setCreatorId(game.creator);
+        const gameResponse = await fetch(`http://localhost:8000/game/api/${gameId}`);
+        const game = await gameResponse.json();
+        setGameStateData(game);
+
+        const userResponse = await fetch(`http://localhost:8000/profiles/api/user_id`);
+        const user = await userResponse.json();
+        setUserId(user.user_id);
+        setIsCreator(user.user_id == game.creator);
       } catch (error) {
         console.error('Error fetching game data:', error);
       }
     };
-    const fetchPlayerData = async () => {
-      try {
-        const response = await fetch(`http://localhost:8000/profiles/api/user_id`);
-        const player = await response.json();
-        setUserId(player.user_id);
-        if (player.user_id == creatorId) {
-          setIsCreator(true);
-        }
-        client.send(
-          JSON.stringify({
-            type: "join_player",
-          })
-        );
-      } catch (error) {
-        console.error('Error fetching game data:', error);
-      }
+    const setGameStateData = (game) => {
+      setActiveRound(game.active_round);
+      setRoundData(game.data[game.active_round]);
+      setActiveThemeId(game.active_question?.question_id);
+      setActiveQuestionId(game.active_question?.question_id);
+      setPlayers(game.players);
+      setGameState(game.state);
+      setGameData(game.data);
     };
-    const initializeData = async () => {
-      await Promise.all([fetchGameData(), fetchPlayerData()]);
-    };
-    initializeData();
+    fetchGameData();
 
     client.onopen = () => {
       console.log(`WebSocket Game Client Connected: ${gameId}`);
+      joinPlayerHandler();
     };
     client.onmessage = (message) => {
       const messageData = JSON.parse(message.data);
+      console.log(messageData);
+
       switch (messageData.type) {
         case 'show_question':
-          setGameState(messageData.state);
-          setQuestionData(messageData.question);
-          break;
-
-        case 'pause':
-          break;
-
-        case 'answering':
-          break;
-
-        case 'answering':
-          break;
-
-        case 'show_answer':
-          break;
-
-        case 'update_round':
-          const updatedRoundId = parseInt(messageData.round_id);
-          setActiveRound(updatedRoundId);
-          fetchGameData();
-          break;
-
-        case 'join_player':
           fetchGameData();
           break;
 
         default:
+          fetchGameData();
           break;
       }
     };
@@ -98,6 +68,62 @@ export function GameProvider({ children, gameId }) {
       client.close(); // Close WebSocket connection when unmounting
     };
   }, [])
+
+  const getQuestionData = () => {
+    return roundData.themes[activeThemeId].questions[activeQuestionId]
+  }
+
+  const getMediaUrl = (type, file) => {
+    const fileName = encodeURIComponent(file.slice(1));
+    return `/media/${gameId}/${type}/${fileName}`
+  }
+
+  const joinPlayerHandler = async () => {
+    client.send(
+      JSON.stringify({
+        type: "join_player",
+      })
+    );
+  }
+
+  const setActivePlayerHandler = (user_id) => {
+    client.send(
+      JSON.stringify({
+        type: "set_active_player",
+        user_id: user_id,
+      })
+    );
+  }
+
+  const showQuestionHandler = (themeIndex, questionIndex, question) => {
+    client.send(
+      JSON.stringify({
+        type: "show_question",
+        round_id: activeRound,
+        question_id: questionIndex,
+        theme_id: themeIndex,
+      })
+    );
+  };
+
+  const answerHandler = () => {
+    client.send(
+      JSON.stringify({
+        type: "answering",
+        user_id: userId,
+      })
+    );
+  }
+
+  const reviewAnswerHandler = (correctness, price) => {
+    client.send(
+      JSON.stringify({
+        type: "review_answer",
+        is_correct: correctness,
+        price: price
+      })
+    );
+  }
 
   const setRoundHandler = (event) => {
     client.send(
@@ -108,38 +134,23 @@ export function GameProvider({ children, gameId }) {
     );
   }
 
-  const showQuestionHandler = (themeIndex, questionIndex, question) => {
-    console.log('setActivePlayerHandler')
-    console.log(themeIndex, questionIndex, question);
-    client.send(
-      JSON.stringify({
-        type: "show_question",
-        round_id: activeRound,
-        question_id: questionIndex,
-        theme_id: themeIndex,
-        question: question,
-      })
-    );
-  };
-
-  const getMediaUrl = (type, file) => {
-    const fileName = encodeURIComponent(file.slice(1));
-    return `/media/${gameId}/${type}/${fileName}`
-  }
-
   const contextValue = {
+    userId,
     isCreator,
     gameId,
     gameState,
     gameData,
     roundData,
     activeRound,
-    questionData,
     players,
     setActiveRound,
     setRoundData,
     setPlayers,
+    getQuestionData,
+    setActivePlayerHandler,
     setRoundHandler,
+    answerHandler,
+    reviewAnswerHandler,
     showQuestionHandler,
     getMediaUrl,
   };

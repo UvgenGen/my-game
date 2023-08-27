@@ -20,6 +20,7 @@ class ReadGameListSerializer(serializers.ModelSerializer):
 
 class PlayerSerializer(serializers.ModelSerializer):
     username = serializers.SerializerMethodField()
+    user_id = serializers.SerializerMethodField()
     profile_image = serializers.SerializerMethodField()
 
     class Meta:
@@ -28,6 +29,9 @@ class PlayerSerializer(serializers.ModelSerializer):
 
     def get_username(self, obj):
         return obj.user.username
+
+    def get_user_id(self, obj):
+        return obj.user.id
 
     def get_profile_image(self, obj):
         profile_image_url = '/static/images/default_porfile.png'

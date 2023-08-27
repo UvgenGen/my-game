@@ -12,9 +12,9 @@ class Player(models.Model):
 
 class Game(models.Model):
     STATE_CHOICES = [
-        ('SELECTING_ACTIVE_USER', 'Selecting Active User'),
-        ('SELECTING_QUESTION', 'Selecting Question'),
-        ('SHOWING_QUESTION', 'Showing Question'),
+        ('SELECT_ACTIVE_USER', 'Selecting Active User'),
+        ('SELECT_QUESTION', 'Selecting Question'),
+        ('SHOW_QUESTION', 'Showing Question'),
         ('CAT_IN_A_BAG', 'Cat in a Bag'),
         ('RATE_QUESTION', 'Rate Question'),
         ('ANSWERING', 'Answering'),
@@ -35,5 +35,67 @@ class Game(models.Model):
     creator = models.ForeignKey(User, related_name='games_created', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     active_round = models.IntegerField(default=0)
+    active_question = models.JSONField(default=dict)
     is_paused = models.BooleanField(default=False)
     state = models.CharField(max_length=50, choices=STATE_CHOICES)
+
+    def set_active_player(self, user_id):
+        self.players.update(is_active=False)
+        player = self.players.get(user__id=user_id)
+        player.is_active = True
+        player.save()
+        self.state = 'SELECT_QUESTION'
+        self.save()
+
+    def set_responder(self, user_id):
+        self.players.update(is_responder=False)
+        player = self.players.get(user__id=user_id)
+        player.is_responder = True
+        player.save()
+        self.state = 'ANSWERING'
+        self.save()
+
+    def set_active_round(self, active_round):
+        self.players.update(is_active=False)
+        self.active_round = int(active_round)
+        self.state = 'SELECT_ACTIVE_USER'
+        self.save()
+
+    def show_answer(self):
+        self.players.update(is_responder=False)
+        self.state = 'SHOW_ANSWER'
+        self.save()
+
+    def show_question(self, question_data):
+        self.players.update(is_responder=False)
+        self.state = 'SHOW_QUESTION'
+        self.active_question = question_data
+        self.save()
+
+    def review_answer(self, is_correct, price):
+        print('review_answer!!!!')
+        try:
+            player = self.players.get(is_responder=True)
+            print('review_answer2!!!!')
+            if is_correct:
+                player.score += int(price)
+                self.state = 'SELECT_QUESTION'
+            else:
+                player.score -= int(price)
+                self.state = 'SHOW_QUESTION'
+            self.players.update(is_responder=False)
+            player.save()
+            self.save()
+        except Player.DoesNotExist:
+            self.state = 'SHOW_QUESTION'
+            self.save()
+            pass
+
+    def is_player(self, user_id):
+        return self.players.filter(user__id=user_id).exists()
+
+    def is_active_player(self, user_id):
+        return self.is_player(user_id) and self.players.get(user__id=user_id).is_active
+
+    def is_creator(self, user_id):
+        return self.creator.id == user_id

@@ -2,9 +2,14 @@ import { useGameContext } from '../context/GameContext'
 
 
 function PlayerBar() {
+  const { answerHandler } = useGameContext();
   return (
     <div className="w-full p-2 bg-white border border-gray-200 rounded-lg mb-2 shadow sm:p-4 dark:bg-gray-800 dark:border-gray-700">
-      <button className="h-10 w-32 bg-red-500 active:bg-red-600  rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" type="button">
+      <button
+        className="h-10 w-32 bg-red-500 active:bg-red-600  rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150"
+        type="button"
+        onClick={() => answerHandler()}
+      >
       </button>
     </div>
   )

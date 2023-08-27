@@ -1,4 +1,5 @@
 import { useGameContext } from '../context/GameContext'
+import Question from './question'
 
 
 function GameTable() {
@@ -27,54 +28,56 @@ function GameTable() {
   )
 }
 
-function Question() {
-  const { questionData, getMediaUrl } = useGameContext();
-  const renderContent = (question, index) => {
-    switch (question.type) {
-      case 'image':
-        return (
-          <div className="flex justify-center items-center h-full" key={index}>
-            <img className="h-fit" src={getMediaUrl('images', question.value)} alt=""/>
-          </div>
-        )
-      case 'video':
-        return (
-          <video className="flex justify-center items-center h-full" autoplay="autoplay" key={index}>
-            <source src={getMediaUrl('videos', question.value)} type="video/mp4"/>
-          </video>
-        )
-      case 'voice':
-        return (
-          <>
-            <div className="flex justify-center items-center h-full" key={index}>
-              <img className="h-fit" src='/static/images/audio.png' alt=""/>
-            </div>
-            <audio id="myaudio" autoplay="autoplay">
-              <source src={getMediaUrl('audios', question.value)} type="audio/mpeg"/>
-            </audio>
-          </>
-        )
-      case 'text':
-        return (
-          <div className="p-5">
-            <p className="font-normal text-gray-700 mb-3 dark:text-gray-400">{question.value}</p>
-          </div>
-        )
-    }
-  };
-
+function AnswerPopup() {
+  const { getQuestionData, reviewAnswerHandler } = useGameContext();
+  const answerData = getQuestionData();
   return (
-    <div className="bg-white shadow-md border border-gray-200 h-full rounded-lg dark:bg-gray-800 dark:border-gray-700">
-      {questionData?.question_content?.map((question, index) => renderContent(question, index))}
-    </div>
+    <>
+      <div
+        className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+      >
+        <div className="relative w-auto my-6 mx-auto max-w-3xl">
+          <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+            <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
+              <h3 className="text-3xl font-semibold">
+                Answer
+              </h3>
+            </div>
+            <div className="relative p-6 flex-auto">
+              <p className="my-4 text-slate-500 text-lg leading-relaxed">
+                { answerData.answer }
+              </p>
+            </div>
+            <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
+              <button
+                className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                type="button"
+                onClick={() => {reviewAnswerHandler(false, answerData.price)}}
+              >
+                Incorrect
+              </button>
+              <button
+                className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                type="button"
+                onClick={() => {reviewAnswerHandler(true, answerData.price)}}
+              >
+                Correct
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+    </>
   )
 }
 
 export default function GameBoard() {
-  const { gameState } = useGameContext();
+  const { gameState, isCreator } = useGameContext();
   return (
     <>
-      { gameState == 'showing_question' ? <Question/> : <GameTable/> }
+      { ['SHOW_QUESTION', 'ANSWERING'].includes(gameState) ? <Question/> : <GameTable/> }
+      { isCreator && gameState == 'ANSWERING' && <AnswerPopup/>}
     </>
   )
 }
