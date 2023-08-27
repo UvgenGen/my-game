@@ -14,35 +14,84 @@ export function GameProvider({ children, gameId }) {
   const [players, setPlayers] = useState([]);
   const [gameState, setGameState] = useState();
   const [gameData, setGameData] = useState([]);
+  const [userId, setUserId] = useState({});
+  const [creatorId, setCreatorId] = useState({});
+  const [isCreator, setIsCreator] = useState({});
 
   const client = new W3CWebSocket('ws://localhost:8000/ws/game/' + gameId + '/');
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchGameData = async () => {
       try {
-        const game_response = await fetch(`http://localhost:8000/game/api/${gameId}`);
-        const game = await game_response.json();
+        const response = await fetch(`http://localhost:8000/game/api/${gameId}`);
+        const game = await response.json();
         setActiveRound(game.active_round);
         setRoundData(game.data[game.active_round]);
         setPlayers(game.players);
         setGameState(game.state);
         setGameData(game.data);
-        console.log(game);
+        setCreatorId(game.creator);
       } catch (error) {
         console.error('Error fetching game data:', error);
       }
     };
-    fetchData();
+    const fetchPlayerData = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/profiles/api/user_id`);
+        const player = await response.json();
+        setUserId(player.user_id);
+        if (player.user_id == creatorId) {
+          setIsCreator(true);
+        }
+        client.send(
+          JSON.stringify({
+            type: "join_player",
+          })
+        );
+      } catch (error) {
+        console.error('Error fetching game data:', error);
+      }
+    };
+    const initializeData = async () => {
+      await Promise.all([fetchGameData(), fetchPlayerData()]);
+    };
+    initializeData();
 
     client.onopen = () => {
       console.log(`WebSocket Game Client Connected: ${gameId}`);
     };
     client.onmessage = (message) => {
       const messageData = JSON.parse(message.data);
-      if (messageData.type = 'show_question') {
-        setGameState(messageData.state);
-        setQuestionData(messageData.question);
-        console.log(messageData)
+      switch (messageData.type) {
+        case 'show_question':
+          setGameState(messageData.state);
+          setQuestionData(messageData.question);
+          break;
+
+        case 'pause':
+          break;
+
+        case 'answering':
+          break;
+
+        case 'answering':
+          break;
+
+        case 'show_answer':
+          break;
+
+        case 'update_round':
+          const updatedRoundId = parseInt(messageData.round_id);
+          setActiveRound(updatedRoundId);
+          fetchGameData();
+          break;
+
+        case 'join_player':
+          fetchGameData();
+          break;
+
+        default:
+          break;
       }
     };
     return () => {
@@ -51,8 +100,12 @@ export function GameProvider({ children, gameId }) {
   }, [])
 
   const setRoundHandler = (event) => {
-    setActiveRound(event.target.value);
-    setRoundData(gameData[event.target.value]);
+    client.send(
+      JSON.stringify({
+        type: "update_round",
+        round_id: event.target.value,
+      })
+    );
   }
 
   const showQuestionHandler = (themeIndex, questionIndex, question) => {
@@ -75,6 +128,7 @@ export function GameProvider({ children, gameId }) {
   }
 
   const contextValue = {
+    isCreator,
     gameId,
     gameState,
     gameData,

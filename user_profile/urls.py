@@ -1,7 +1,6 @@
-from django.urls import path
-from user_profile.api.views import UserProfileList
+from django.urls import path, include
 
 
 urlpatterns = [
-    path('api/', UserProfileList.as_view()),
+    path('api/', include(('user_profile.api.urls', 'game'))),
 ]

@@ -6,7 +6,7 @@ import Message from './message';
 export default function Chat({ gameId }) {
   const [postsList, setPostsList] = useState([]);
   const [newPost, setNewPost] = useState('');
-  const [isChatCollapsed, setIsChatCollapsed] = useState(false);
+  const [isChatCollapsed, setIsChatCollapsed] = useState(true);
 
   const client = new W3CWebSocket(`ws://localhost:8000/ws/${gameId}/`);
 

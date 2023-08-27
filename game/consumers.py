@@ -43,6 +43,7 @@ class ChatConsumer(WebsocketConsumer):
 class GameConsumer(WebsocketConsumer):
     def connect(self):
         self.game_id = self.scope['url_route']['kwargs']['game_id']
+        self.game = Game.objects.get(id=self.game_id)
         self.game_group_name = 'game_%s' % self.game_id
         # Join room group
         async_to_sync(self.channel_layer.group_add)(
@@ -67,7 +68,34 @@ class GameConsumer(WebsocketConsumer):
         )
 
     def show_question(self, event):
-        # Send message to WebSocket
         data = event
         data['state'] = 'showing_question'
         self.send(text_data=json.dumps(event))
+
+    def pause(self, event):
+        data = event
+        data['state'] = 'pause'
+        self.send(text_data=json.dumps(event))
+
+    def answering(self, event):
+        data = event
+        data['state'] = 'answering'
+        self.send(text_data=json.dumps(event))
+
+    def show_answer(self, event):
+        data = event
+        data['state'] = 'show_answer'
+        self.send(text_data=json.dumps(event))
+
+    def join_player(self, event):
+        data = event
+        data['state'] = 'join_player'
+        self.send(text_data=json.dumps(event))
+
+    def update_round(self, event):
+        data = event
+        data['state'] = 'update_round'
+        self.send(text_data=json.dumps(event))
+        self.game.active_round = int(event.get('round_id', 0))
+        self.game.state = 'SELECTING_ACTIVE_USER'
+        self.game.save()

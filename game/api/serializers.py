@@ -30,7 +30,7 @@ class PlayerSerializer(serializers.ModelSerializer):
         return obj.user.username
 
     def get_profile_image(self, obj):
-        profile_image_url = ''
+        profile_image_url = '/static/images/default_porfile.png'
         if hasattr(obj.user, 'profile'):
             profile_image_url = obj.user.profile.profile_image.url
         return profile_image_url

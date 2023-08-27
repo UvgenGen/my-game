@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from game.api.serializers import (GameDetailSerializer, ReadGameListSerializer,
-                                  WriteGameListSerializer)
+                                  WriteGameListSerializer, PlayerSerializer)
 from game.models import Game, Player
 
 from .utils import parse_content_xml_from_zip, parse_and_save_files_from_zip

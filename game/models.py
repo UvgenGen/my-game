@@ -12,12 +12,14 @@ class Player(models.Model):
 
 class Game(models.Model):
     STATE_CHOICES = [
-        ('selecting_active_user', 'selecting active user'),
-        ('selecting_question', 'selecting question'),
-        ('showing_question', 'showing question'),
-        ('cat_in_a_bag', 'cat in a bag'),
-        ('rate_question', 'rate question'),
-        ('answering', 'answering'),
+        ('SELECTING_ACTIVE_USER', 'Selecting Active User'),
+        ('SELECTING_QUESTION', 'Selecting Question'),
+        ('SHOWING_QUESTION', 'Showing Question'),
+        ('CAT_IN_A_BAG', 'Cat in a Bag'),
+        ('RATE_QUESTION', 'Rate Question'),
+        ('ANSWERING', 'Answering'),
+        ('SHOW_ANSWER', 'Show Answer'),
+        ('FINAL', 'Final'),
     ]
 
     title = models.CharField(max_length=25)
@@ -29,9 +31,9 @@ class Game(models.Model):
             MinValueValidator(1)
         ]
     )
-    players = models.ManyToManyField(Player, related_name='game', blank=True)
-    creator = models.ForeignKey(User, related_name='game', on_delete=models.CASCADE)
-    created_at = models.TimeField(auto_now_add=True)
+    players = models.ManyToManyField(Player, related_name='games', blank=True)
+    creator = models.ForeignKey(User, related_name='games_created', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
     active_round = models.IntegerField(default=0)
     is_paused = models.BooleanField(default=False)
     state = models.CharField(max_length=50, choices=STATE_CHOICES)

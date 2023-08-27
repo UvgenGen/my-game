@@ -29,17 +29,31 @@ function GameTable() {
 
 function Question() {
   const { questionData, getMediaUrl } = useGameContext();
-  console.log(questionData);
-  const renderContent = (question) => {
+  const renderContent = (question, index) => {
     switch (question.type) {
       case 'image':
         return (
-          <div class="flex justify-center items-center h-full">
+          <div className="flex justify-center items-center h-full" key={index}>
             <img className="h-fit" src={getMediaUrl('images', question.value)} alt=""/>
           </div>
         )
-        
-        
+      case 'video':
+        return (
+          <video className="flex justify-center items-center h-full" autoplay="autoplay" key={index}>
+            <source src={getMediaUrl('videos', question.value)} type="video/mp4"/>
+          </video>
+        )
+      case 'voice':
+        return (
+          <>
+            <div className="flex justify-center items-center h-full" key={index}>
+              <img className="h-fit" src='/static/images/audio.png' alt=""/>
+            </div>
+            <audio id="myaudio" autoplay="autoplay">
+              <source src={getMediaUrl('audios', question.value)} type="audio/mpeg"/>
+            </audio>
+          </>
+        )
       case 'text':
         return (
           <div className="p-5">
@@ -51,7 +65,7 @@ function Question() {
 
   return (
     <div className="bg-white shadow-md border border-gray-200 h-full rounded-lg dark:bg-gray-800 dark:border-gray-700">
-      {questionData?.question_content?.map((question) => renderContent(question))}
+      {questionData?.question_content?.map((question, index) => renderContent(question, index))}
     </div>
   )
 }

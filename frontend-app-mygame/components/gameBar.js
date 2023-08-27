@@ -43,12 +43,11 @@ function CreatorBar() {
 }
 
 export default function GameBar() {
-  const { gameId } = useGameContext();
+  const { isCreator } = useGameContext();
 
-  return (
-    <>
-      <PlayerBar/>
-      <CreatorBar/>
-    </>
-  )
+  if (isCreator) {
+    return <CreatorBar/>
+  } else {
+    return <PlayerBar/>
+  }
 }
