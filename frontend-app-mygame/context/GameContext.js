@@ -17,6 +17,8 @@ export function GameProvider({ children, gameId }) {
   const [gameData, setGameData] = useState([]);
   const [userId, setUserId] = useState({});
   const [isCreator, setIsCreator] = useState(false);
+  const [questionTime, setQuestionTime] = useState(0);
+  const [answerTime, setAnswerTime] = useState(0);
 
   const client = new W3CWebSocket('ws://localhost:8000/ws/game/' + gameId + '/');
 
@@ -55,8 +57,17 @@ export function GameProvider({ children, gameId }) {
       console.log(messageData);
 
       switch (messageData.type) {
-        case 'show_question':
-          fetchGameData();
+        case 'question_time_left':
+          setQuestionTime(messageData.time_left);
+          break;
+
+        case 'answer_time_left':
+          setAnswerTime(messageData.time_left);
+          break;
+        case 'review_answer':
+          if (!messageData.is_correct) {
+            fetchGameData();
+          }
           break;
 
         default:
@@ -123,6 +134,13 @@ export function GameProvider({ children, gameId }) {
         price: price
       })
     );
+    if (correctness){
+      client.send(
+        JSON.stringify({
+          type: "show_answer"
+        })
+      );
+    }
   }
 
   const setRoundHandler = (event) => {
@@ -135,6 +153,8 @@ export function GameProvider({ children, gameId }) {
   }
 
   const contextValue = {
+    questionTime,
+    answerTime,
     userId,
     isCreator,
     gameId,

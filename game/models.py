@@ -86,11 +86,10 @@ class Game(models.Model):
             player = self.players.get(is_responder=True)
             if is_correct:
                 player.score += int(price)
-                self.update_state('SHOW_ANSWER')
                 player.is_active = True
             else:
                 player.score -= int(price)
-                self.update_state('SHOW_QUESTION')
+            self.update_state('SHOW_QUESTION')
             player.answered = True
             player.is_responder = False
             player.save()
