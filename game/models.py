@@ -73,13 +73,11 @@ class Game(models.Model):
         self.save()
 
     def review_answer(self, is_correct, price):
-        print('review_answer!!!!')
         try:
             player = self.players.get(is_responder=True)
-            print('review_answer2!!!!')
             if is_correct:
                 player.score += int(price)
-                self.state = 'SELECT_QUESTION'
+                self.state = 'SHOW_ANSWER'
             else:
                 player.score -= int(price)
                 self.state = 'SHOW_QUESTION'

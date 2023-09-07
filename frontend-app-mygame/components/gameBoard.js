@@ -1,5 +1,6 @@
 import { useGameContext } from '../context/GameContext'
 import Question from './question'
+import Answer from './answer'
 
 
 function GameTable() {
@@ -74,9 +75,22 @@ function AnswerPopup() {
 
 export default function GameBoard() {
   const { gameState, isCreator } = useGameContext();
+  const renderContent = () => {
+    switch (gameState) {
+      case 'SHOW_QUESTION':
+      case 'ANSWERING':
+        return <Question/>
+
+      case 'SHOW_ANSWER':
+        return <Answer/>
+    
+      default:
+        return <GameTable/>
+    }
+  }
   return (
     <>
-      { ['SHOW_QUESTION', 'ANSWERING'].includes(gameState) ? <Question/> : <GameTable/> }
+      { renderContent() }
       { isCreator && gameState == 'ANSWERING' && <AnswerPopup/>}
     </>
   )

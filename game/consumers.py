@@ -63,74 +63,74 @@ class GameConsumer(WebsocketConsumer):
             self.channel_name
         )
 
+    def update_and_send(self, data):
+        update_type = data.get('type')
+        user = self.scope["user"]
+        if update_type == 'show_question':
+            if not(
+                (self.game.is_creator(user.id) or self.game.is_active_player(user.id))
+                and self.game.state in ['SELECT_QUESTION']
+            ):
+                return
+            question_data = {
+                'round_id': data['round_id'],
+                'question_id': data['question_id'],
+                'theme_id': data['theme_id'],
+            }
+            self.game.show_question(question_data)
+        elif update_type == 'pause':
+            pass
+        elif update_type == 'set_active_player':
+            if not (self.game.is_creator(user.id) and self.game.state in ['SELECT_ACTIVE_USER']):
+                return
+            self.game.set_active_player(data['user_id'])
+        elif update_type == 'answering':
+            if not (self.game.is_player(user.id) and self.game.state in ['SHOW_QUESTION']):
+                return
+            self.game.set_responder(user.id)
+        elif update_type == 'show_answer':
+            pass
+        elif update_type == 'review_answer':
+            if not (self.game.is_creator(user.id) and self.game.state in ['ANSWERING']):
+                return
+            self.game.review_answer(data['is_correct'], data['price'])
+        elif update_type == 'join_player':
+            self.join_player(data)
+        elif update_type == 'update_round':
+            if not self.game.is_creator(user.id):
+                return
+            self.game.set_active_round(data.get('round_id', 0))
+
+        async_to_sync(self.channel_layer.group_send)(
+            self.game_group_name,
+            data
+        )
+
     def receive(self, text_data):
         # Receive event data from WebSocket
         data_json = json.loads(text_data)
-        async_to_sync(self.channel_layer.group_send)(
-            self.game_group_name,
-            data_json
-        )
+        self.update_and_send(data_json)
 
     def show_question(self, event):
-        data = event
-        data['state'] = 'showing_question'
-        user = self.scope["user"]
-        if (
-            (self.game.is_creator(user.id) or self.game.is_active_player(user.id))
-            and self.game.state in ['SELECT_QUESTION']
-            ):
-            question_data = {
-                'round_id': event['round_id'],
-                'question_id': event['question_id'],
-                'theme_id': event['theme_id'],
-            }
-            self.game.show_question(question_data)
-            self.send(text_data=json.dumps(event))
+        self.send(text_data=json.dumps(event))
 
     def pause(self, event):
-        data = event
-        data['state'] = 'pause'
         self.send(text_data=json.dumps(event))
 
     def set_active_player(self, event):
-        data = event
-        data['state'] = 'set_active_player'
-        user = self.scope["user"]
-        if self.game.is_creator(user.id) and self.game.state in ['SELECT_ACTIVE_USER']:
-            data['state'] = 'answering'
-            self.game.set_active_player(event['user_id'])
-            self.send(text_data=json.dumps(event))
+        self.send(text_data=json.dumps(event))
 
     def answering(self, event):
-        data = event
-        user = self.scope["user"]
-        if self.game.is_player(user.id) and self.game.state in ['SHOW_QUESTION']:
-            data['state'] = 'answering'
-            self.game.set_responder(user.id)
-            self.send(text_data=json.dumps(event))
+        self.send(text_data=json.dumps(event))
 
     def show_answer(self, event):
-        data = event
-        data['state'] = 'show_answer'
         self.send(text_data=json.dumps(event))
 
     def review_answer(self, event):
-        data = event
-        data['state'] = 'review_answer'
-        user = self.scope["user"]
-        if self.game.is_creator(user.id) and self.game.state in ['ANSWERING']:
-            self.game.review_answer(event['is_correct'], event['price'])
-            self.send(text_data=json.dumps(event))
+        self.send(text_data=json.dumps(event))
 
     def join_player(self, event):
-        data = event
-        data['state'] = 'join_player'
         self.send(text_data=json.dumps(event))
 
     def update_round(self, event):
-        data = event
-        user = self.scope["user"]
-        if self.game.is_creator(user.id):
-            data['state'] = 'update_round'
-            self.game.set_active_round(event.get('round_id', 0))
-            self.send(text_data=json.dumps(event))
+        self.send(text_data=json.dumps(event))
