@@ -14,7 +14,7 @@ export default function Answer() {
         )
       case 'video':
         return (
-          <video className="flex justify-center items-center h-full" autoplay="autoplay" key={index}>
+          <video className="flex justify-center items-center h-full" autoPlay="autoplay" key={index}>
             <source src={getMediaUrl('videos', question.value)} type="video/mp4"/>
           </video>
         )
@@ -24,7 +24,7 @@ export default function Answer() {
             <div className="flex justify-center items-center h-full" key={index}>
               <img className="h-fit" src='/static/images/audio.png' alt=""/>
             </div>
-            <audio id="myaudio" autoplay="autoplay">
+            <audio id="myaudio" autoPlay="autoplay">
               <source src={getMediaUrl('audios', question.value)} type="audio/mpeg"/>
             </audio>
           </>

@@ -14,7 +14,7 @@ export default function Question() {
         )
       case 'video':
         return (
-          <video className="flex justify-center items-center h-full" autoplay="autoplay" key={index}>
+          <video className="flex justify-center items-center h-full" autoPlay="autoplay" key={index}>
             <source src={getMediaUrl('videos', question.value)} type="video/mp4"/>
           </video>
         )
@@ -24,14 +24,14 @@ export default function Question() {
             <div className="flex justify-center items-center h-full" key={index}>
               <img className="h-fit" src='/static/images/audio.png' alt=""/>
             </div>
-            <audio id="myaudio" autoplay="autoplay">
+            <audio id="myaudio" autoPlay="autoplay">
               <source src={getMediaUrl('audios', question.value)} type="audio/mpeg"/>
             </audio>
           </>
         )
       case 'text':
         return (
-          <div className="p-5">
+          <div className="p-5" key={index}>
             <p className="font-normal text-gray-700 mb-3 dark:text-gray-400">{question.value}</p>
           </div>
         )
