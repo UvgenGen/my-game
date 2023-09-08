@@ -132,7 +132,7 @@ class GameConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def _update_show_answer(self, data, user):
         if (
-            self.game.is_player(user.id)
+            (self.game.is_player(user.id) or self.game.is_creator(user.id))
             and self.game.state in ['SHOW_QUESTION', 'ANSWERING']
             ):
             self.game.show_answer()
@@ -199,6 +199,8 @@ class GameConsumer(AsyncWebsocketConsumer):
             game = await self.get_game(self.game_id)
             if game.state not in ['SHOW_QUESTION', 'ANSWERING']:
                 return
+            if await database_sync_to_async(game.is_all_players_answered)():
+                break
             if game.state == 'SHOW_QUESTION':
                 # Send time left to clients
                 time_left -= 1
