@@ -152,6 +152,16 @@ export function GameProvider({ children, gameId }) {
     );
   }
 
+  const updateScore = (playerId, newScore) => {
+    client.send(
+      JSON.stringify({
+        type: "update_score",
+        player_id: playerId,
+        score: newScore,
+      })
+    );
+  }
+
   const contextValue = {
     questionTime,
     answerTime,
@@ -166,6 +176,7 @@ export function GameProvider({ children, gameId }) {
     setActiveRound,
     setRoundData,
     setPlayers,
+    updateScore,
     getQuestionData,
     setActivePlayerHandler,
     setRoundHandler,

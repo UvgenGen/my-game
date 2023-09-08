@@ -87,6 +87,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             'review_answer': self._update_review_answer,
             'join_player': self._update_join_player,
             'update_round': self._update_update_round,
+            'update_score': self._update_update_score,
         }
 
         update_function = update_functions.get(update_type)
@@ -143,6 +144,13 @@ class GameConsumer(AsyncWebsocketConsumer):
         if not self.game.is_creator(user.id):
             return
         self.game.set_active_round(data.get('round_id', 0))
+
+    @database_sync_to_async
+    def _update_update_score(self, data, user):
+        if not self.game.is_creator(user.id):
+            return
+        print(data)
+        self.game.update_player_score(data.get('player_id'), data.get('score'))
 
     @database_sync_to_async
     def update_game_state(self, state):
@@ -234,4 +242,7 @@ class GameConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps(event))
 
     async def update_round(self, event):
+        await self.send(text_data=json.dumps(event))
+
+    async def update_score(self, event):
         await self.send(text_data=json.dumps(event))

@@ -39,9 +39,6 @@ function CreatorBar() {
 
   return (
     <div className="w-full p-2 bg-white border border-gray-200 rounded-lg mb-2 shadow sm:p-4 dark:bg-gray-800 dark:border-gray-700">
-      <button className="border-2 border-blue-600 rounded-lg px-3 py-2 text-blue-400 cursor-pointer hover:bg-blue-600 hover:text-blue-200" type="button">
-        Pause
-      </button>
       <RoundSelector/>
     </div>
   )

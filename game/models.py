@@ -42,7 +42,7 @@ class Game(models.Model):
 
     def reset_players(self):
         self.players.update(is_active=False, is_responder=False, answered=False)
-    
+
     def update_state(self, state):
         self.state = state
         self.save()
@@ -111,3 +111,6 @@ class Game(models.Model):
 
     def is_player_can_answer(self, user_id):
         return self.is_player(user_id) and not self.players.get(user__id=user_id).answered
+
+    def update_player_score(self, player_id, score):
+        self.players.filter(id=player_id).update(score = score)
