@@ -40,7 +40,7 @@ export function GameProvider({ children, gameId }) {
     const setGameStateData = (game) => {
       setActiveRound(game.active_round);
       setRoundData(game.data[game.active_round]);
-      setActiveThemeId(game.active_question?.question_id);
+      setActiveThemeId(game.active_question?.theme_id);
       setActiveQuestionId(game.active_question?.question_id);
       setPlayers(game.players);
       setGameState(game.state);
@@ -111,8 +111,8 @@ export function GameProvider({ children, gameId }) {
       JSON.stringify({
         type: "show_question",
         round_id: activeRound,
-        question_id: questionIndex,
         theme_id: themeIndex,
+        question_id: questionIndex,
       })
     );
   };

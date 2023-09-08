@@ -101,39 +101,49 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def _update_show_question(self, data, user):
-        if not (self.game.is_creator(user.id) or self.game.is_active_player(user.id)) or self.game.state not in ['SELECT_QUESTION']:
-            return
-
-        question_data = {
-            'round_id': data['round_id'],
-            'question_id': data['question_id'],
-            'theme_id': data['theme_id'],
-        }
-        self.game.show_question(question_data)
+        if (
+            self.game.is_creator(user.id)
+            or self.game.is_active_player(user.id)
+            or self.game.state in ['SELECT_QUESTION']
+            ):
+            question_data = {
+                'round_id': data['round_id'],
+                'question_id': data['question_id'],
+                'theme_id': data['theme_id'],
+            }
+            self.game.show_question(question_data)
 
     @database_sync_to_async
     def _update_set_active_player(self, data, user):
-        if not (self.game.is_creator(user.id) and self.game.state in ['SELECT_ACTIVE_USER']):
-            return
-        self.game.set_active_player(data['user_id'])
+        if (
+            self.game.is_creator(user.id)
+            and self.game.state in ['SELECT_ACTIVE_USER']
+            ):
+            self.game.set_active_player(data['user_id'])
 
     async def _update_answering(self, data, user):
         can_answer = await database_sync_to_async(self.game.is_player_can_answer)(user.id)
-        if not (can_answer and self.game.state in ['SHOW_QUESTION']):
-            return
-        await database_sync_to_async(self.game.set_responder)(user.id)
+        if (
+            can_answer
+            and self.game.state in ['SHOW_QUESTION']
+            ):
+            await database_sync_to_async(self.game.set_responder)(user.id)
 
     @database_sync_to_async
     def _update_show_answer(self, data, user):
-        if not (self.game.is_player(user.id) and self.game.state in ['SHOW_QUESTION', 'ANSWERING']):
-            return
-        self.game.show_answer()
+        if (
+            self.game.is_player(user.id)
+            and self.game.state in ['SHOW_QUESTION', 'ANSWERING']
+            ):
+            self.game.show_answer()
 
     @database_sync_to_async
     def _update_review_answer(self, data, user):
-        if not (self.game.is_creator(user.id) and self.game.state in ['ANSWERING']):
-            return
-        self.game.review_answer(data['is_correct'], data['price'])
+        if (
+            self.game.is_creator(user.id)
+            and self.game.state in ['ANSWERING']
+            ):
+            self.game.review_answer(data['is_correct'], data['price'])
 
     @database_sync_to_async
     def _update_join_player(self, data, user):
@@ -141,16 +151,13 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def _update_update_round(self, data, user):
-        if not self.game.is_creator(user.id):
-            return
-        self.game.set_active_round(data.get('round_id', 0))
+        if self.game.is_creator(user.id):
+            self.game.set_active_round(data.get('round_id', 0))
 
     @database_sync_to_async
     def _update_update_score(self, data, user):
-        if not self.game.is_creator(user.id):
-            return
-        print(data)
-        self.game.update_player_score(data.get('player_id'), data.get('score'))
+        if self.game.is_creator(user.id):
+            self.game.update_player_score(data.get('player_id'), data.get('score'))
 
     @database_sync_to_async
     def update_game_state(self, state):

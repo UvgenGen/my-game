@@ -40,6 +40,12 @@ class Game(models.Model):
     is_paused = models.BooleanField(default=False)
     state = models.CharField(max_length=50, choices=STATE_CHOICES)
 
+    def mark_question(self, round_id, theme_id, question_id):
+        self.data[round_id].get('themes')[theme_id].get('questions')[question_id].update({
+            'completed': True
+        })
+        self.save()
+
     def reset_players(self):
         self.players.update(is_active=False, is_responder=False, answered=False)
 
@@ -48,7 +54,7 @@ class Game(models.Model):
         self.save()
 
     def set_active_player(self, user_id):
-        self.players.update(is_active=False)
+        self.reset_players()
         player = self.players.get(user__id=user_id)
         player.is_active = True
         player.save()
@@ -78,6 +84,7 @@ class Game(models.Model):
         self.players.update(is_responder=False)
         self.state = 'SHOW_QUESTION'
         self.active_question = question_data
+        self.mark_question(**question_data)
         self.save()
         self.update_state('SHOW_QUESTION')
 
@@ -87,18 +94,19 @@ class Game(models.Model):
             if is_correct:
                 player.score += int(price)
                 player.is_active = True
+                self.update_state('SHOW_ANSWER')
             else:
                 player.score -= int(price)
-            self.update_state('SHOW_QUESTION')
-            player.answered = True
+                player.answered = True
+                self.update_state('SHOW_QUESTION')
             player.is_responder = False
             player.save()
             self.save()
         except Player.DoesNotExist:
             self.update_state('SHOW_QUESTION')
 
-        if all(self.players.values_list('answered', flat=True)):
-            self.update_state('SHOW_ANSWER')
+    def is_all_players_answered(self):
+        return not self.players.filter(answered=False).exists()
 
     def is_player(self, user_id):
         return self.players.filter(user__id=user_id).exists()
