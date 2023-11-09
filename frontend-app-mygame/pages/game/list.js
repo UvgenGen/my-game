@@ -53,7 +53,7 @@ export default function GameList(context) {
 
 
 export async function getServerSideProps({ params }) {
-    const res = await fetch(`http://web:8000/game/api`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_INTERNAL_WEB_URL}/game/api`);
     const games = await res.json();
     return { props: { games } }
 }

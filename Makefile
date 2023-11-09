@@ -11,6 +11,7 @@ help:
 	@echo "  frontend-logs     Show logs from the running frontend containers"
 	@echo "  backend-shell     Open a shell in the backend container"
 	@echo "  backend-restart   Restart the backend container"
+	@echo "  frontend-restart   Restart the frontend container"
 	@echo "  help              Show this help message"
 
 requirements:
@@ -41,4 +42,7 @@ backend-shell:
 	docker exec -it mygame_web_1 bash
 
 backend-restart:
+	@docker-compose restart web
+
+frontend-restart:
 	@docker-compose restart web

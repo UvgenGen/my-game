@@ -20,7 +20,7 @@ const GameForm = () => {
     formData.append('password', password);
 
     try {
-      const response = await fetch('http://localhost:8000/game/api/', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/game/api/`, {
         method: 'POST',
         headers: {
           'X-CSRFToken': Cookies.get('csrftoken')

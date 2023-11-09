@@ -20,16 +20,16 @@ export function GameProvider({ children, gameId }) {
   const [questionTime, setQuestionTime] = useState(0);
   const [answerTime, setAnswerTime] = useState(0);
 
-  const client = new W3CWebSocket('ws://localhost:8000/ws/game/' + gameId + '/');
+  const client = new W3CWebSocket(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/ws/game/${gameId}/`);
 
   useEffect(() => {
     const fetchGameData = async () => {
       try {
-        const gameResponse = await fetch(`http://localhost:8000/game/api/${gameId}`);
+        const gameResponse = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/game/api/${gameId}`);
         const game = await gameResponse.json();
         setGameStateData(game);
 
-        const userResponse = await fetch(`http://localhost:8000/profiles/api/user_id`);
+        const userResponse = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/profiles/api/user_id`);
         const user = await userResponse.json();
         setUserId(user.user_id);
         setIsCreator(user.user_id == game.creator);

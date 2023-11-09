@@ -20,7 +20,7 @@ export default function JoinGame(context) {
         };
     
         try {
-            const response = await fetch(`http://localhost:8000/game/api/join/${id}`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/game/api/join/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

@@ -8,11 +8,11 @@ export default function Chat({ gameId }) {
   const [newPost, setNewPost] = useState('');
   const [isChatCollapsed, setIsChatCollapsed] = useState(true);
 
-  const client = new W3CWebSocket(`ws://localhost:8000/ws/${gameId}/`);
+  const client = new W3CWebSocket(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/ws/${gameId}/`);
 
   const fetchPosts = async () => {
     try {
-      const response = await fetch(`http://localhost:8000/chat/api/?game=${gameId}`);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/chat/api/?game=${gameId}`);
       const posts = await response.json();
       setPostsList(posts);
     } catch (error) {
@@ -62,7 +62,7 @@ export default function Chat({ gameId }) {
 
   const saveNewPost = async (message) => {
     try {
-      const response = await fetch('http://localhost:8000/chat/api/', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/chat/api/`, {
         headers: {
           'X-CSRFToken': Cookies.get('csrftoken'),
           'Content-Type': 'application/json',
