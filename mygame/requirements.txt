@@ -8,3 +8,4 @@ daphne==4.0.0
 channels==4.0.0
 drf-yasg==1.21.7
 channels-redis==4.1.0
+python-dotenv==1.0.0
