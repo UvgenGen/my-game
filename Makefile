@@ -33,16 +33,16 @@ clean:
 	@docker-compose down --volumes --remove-orphans
 
 backend-logs:
-	docker logs -f --tail 100 mygame_web_1
+	docker logs -f --tail 100 my-game_mygame_1
 
 frontend-logs:
-	docker logs -f --tail 100 mygame_frontend-app-mygame_1
+	docker logs -f --tail 100 my-game_frontend-app-mygame_1
 
 backend-shell:
-	docker exec -it mygame_web_1 bash
+	docker exec -it my-game_mygame_1 bash
 
 backend-restart:
-	@docker-compose restart web
+	@docker-compose restart mygame
 
 frontend-restart:
-	@docker-compose restart web
+	@docker-compose restart mygame
