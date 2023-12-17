@@ -5,8 +5,13 @@ RUN mkdir -p /app
 
 WORKDIR /app
 
-COPY ./package.json ./
-RUN npm i
+# Copy only the package.json and package-lock.json files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the application code
 COPY . .
 
 EXPOSE 3000
