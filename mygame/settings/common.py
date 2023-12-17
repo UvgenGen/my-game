@@ -19,14 +19,14 @@ env_path = Path('.') / '.env'
 load_dotenv(dotenv_path=env_path)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 DEBUG = os.environ.get('DJANGO_DEBUG') == 'True'
-ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS').split(',') or ['*', 'web-mygame', 'localhost']
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS').split(',') or ['*',]
 
 
 # Application definition
@@ -131,9 +131,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = os.environ.get('STATIC_URL', 'static/')
+STATIC_URL = os.environ.get('STATIC_URL')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = os.environ.get('MEDIA_URL', '/media/')
+MEDIA_URL = os.environ.get('MEDIA_URL')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

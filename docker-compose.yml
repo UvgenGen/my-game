@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  web:
+  mygame:
     build: ./mygame
     command: python manage.py runserver 0.0.0.0:8000 --settings='mygame.settings.development'
     volumes:
@@ -13,10 +13,10 @@ services:
         aliases:
           - web-mygame
     depends_on:
-      db:
-        condition: service_healthy
+      - db:
+          condition: service_healthy
 
-  db:
+  mysql:
     image: mysql:5.7
     ports:
       - '3306:3306'
