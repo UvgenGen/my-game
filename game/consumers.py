@@ -44,12 +44,24 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
 class GameConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        if self.scope["user"].is_anonymous:
+        user = self.scope["user"]
+        if user.is_anonymous:
             # Reject the connection if the user is not authenticated
             await self.close()
+            return
 
         self.game_id = self.scope['url_route']['kwargs']['game_id']
-        self.game = await self.get_game(self.game_id)
+        try:
+            self.game = await self.get_game(self.game_id)
+        except Game.DoesNotExist:
+            await self.close()
+            return
+
+        # Only the creator and joined players may connect to a game's socket
+        if not await self.is_member(user):
+            await self.close()
+            return
+
         self.game_group_name = 'game_%s' % self.game_id
         # Join room group
         await self.channel_layer.group_add(
@@ -57,6 +69,10 @@ class GameConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
         await self.accept()
+
+    @database_sync_to_async
+    def is_member(self, user):
+        return self.game.is_creator(user.id) or self.game.is_player(user.id)
 
     async def disconnect(self, close_code):
         # Leave room group

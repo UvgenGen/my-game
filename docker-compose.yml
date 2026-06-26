@@ -3,7 +3,9 @@ version: '3'
 services:
   mygame:
     build: ./mygame
-    command: python manage.py runserver 0.0.0.0:8000 --settings='mygame.settings.development'
+    command: sh -c "python manage.py migrate --noinput && python manage.py runserver 0.0.0.0:8000 --settings='mygame.settings.development'"
+    environment:
+      DJANGO_SETTINGS_MODULE: mygame.settings.development
     volumes:
       - .:/mygame
     ports:
@@ -17,7 +19,7 @@ services:
         condition: service_healthy
 
   mysql:
-    image: mysql:5.7
+    image: mysql:8.4
     ports:
       - '3306:3306'
     environment:
@@ -48,6 +50,6 @@ services:
       - mygame
 
   redis:
-    image: redis:5
+    image: redis:7-alpine
     ports:
       - "6379:6379"

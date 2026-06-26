@@ -5,15 +5,26 @@ import zipfile
 from urllib.parse import unquote
 
 from django.conf import settings
+from django.core.exceptions import SuspiciousOperation
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
+
+
+def _safe_extractall(zip_ref, target_dir):
+    """Extract a zip while rejecting members that escape ``target_dir`` (Zip Slip)."""
+    target_root = os.path.realpath(target_dir)
+    for member in zip_ref.namelist():
+        member_path = os.path.realpath(os.path.join(target_dir, member))
+        if member_path != target_root and not member_path.startswith(target_root + os.sep):
+            raise SuspiciousOperation(f"Unsafe path in uploaded archive: {member!r}")
+    zip_ref.extractall(target_dir)
 
 
 def parse_and_save_files_from_zip(temp_uploaded_file, game_id):
     with zipfile.ZipFile(temp_uploaded_file, 'r') as zip_ref:
         # Extract the contents of the zip file
         extraction_folder = f'/tmp/game_files/{game_id}/'
-        zip_ref.extractall(extraction_folder)
+        _safe_extractall(zip_ref, extraction_folder)
 
         # Get the paths to Video, Audio, and Images directories
         video_dir = os.path.join(extraction_folder, 'Video')
@@ -35,7 +46,9 @@ def save_files_to_static(source_dir, destination_subdir):
         for file in files:
             print(file)
             source_path = os.path.join(root, file)
-            destination_path = os.path.join(settings.MEDIA_ROOT, destination_subdir, unquote(file))
+            # basename() neutralizes any path separators that unquote() may reintroduce
+            safe_name = os.path.basename(unquote(file))
+            destination_path = os.path.join(settings.MEDIA_ROOT, destination_subdir, safe_name)
 
             # Create necessary subdirectories if they don't exist
             os.makedirs(os.path.dirname(destination_path), exist_ok=True)

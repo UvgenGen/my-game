@@ -1,4 +1,5 @@
 {
+  "name": "frontend-app-mygame",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -7,9 +8,9 @@
   "dependencies": {
     "cors": "^2.8.5",
     "js-cookie": "^3.0.1",
-    "next": "latest",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "next": "16",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
     "websocket": "^1.0.34"
   },
   "devDependencies": {

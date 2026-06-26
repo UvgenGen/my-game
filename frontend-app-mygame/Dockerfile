@@ -1,5 +1,5 @@
 # Install dependencies only when needed
-FROM node:16-alpine
+FROM node:22-alpine
 
 RUN mkdir -p /app
 
@@ -9,7 +9,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm ci
 
 # Copy the rest of the application code
 COPY . .
