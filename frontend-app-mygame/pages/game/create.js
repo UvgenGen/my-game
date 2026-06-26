@@ -7,11 +7,15 @@ const GameForm = () => {
   const [file, setFile] = useState(null);
   const [userCount, setUserCount] = useState(2);
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(file);
+    if (loading) return;
+    setError(null);
+    setLoading(true);
 
     const formData = new FormData();
     formData.append('title', title);
@@ -29,14 +33,21 @@ const GameForm = () => {
       });
       if (response.ok) {
         const data = await response.json();
-        console.log('New game created:', data);
+        // Keep the loading state on — we're navigating away to the new game.
         router.push(`/game/${data.id}`);
-
       } else {
-        console.error('Error:', response.statusText);
+        const detail = await response.json().catch(() => null);
+        const message = detail && typeof detail === 'object'
+          ? Object.entries(detail)
+              .map(([field, msgs]) => `${field}: ${Array.isArray(msgs) ? msgs.join(' ') : msgs}`)
+              .join('  ')
+          : (response.statusText || 'Could not create the game.');
+        setError(message);
+        setLoading(false);
       }
-    } catch (error) {
-      console.error('Error:', error);
+    } catch (err) {
+      setError('Network error — could not reach the server.');
+      setLoading(false);
     }
   };
 
@@ -67,7 +78,23 @@ const GameForm = () => {
             <label htmlFor="password" className="block text-sm font-medium text-muted mb-1">Room password</label>
             <input type="text" id="password" value={password} onChange={(e) => setPassword(e.target.value)} className="input" />
           </div>
-          <button type="submit" className="btn-primary w-full py-3">Create Game</button>
+          {error && (
+            <div className="mb-4 p-3 text-sm rounded-lg bg-incorrect/15 text-incorrect border border-incorrect/40" role="alert">
+              {error}
+            </div>
+          )}
+          <button
+            type="submit"
+            disabled={loading}
+            className="btn-primary w-full py-3 disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {loading ? (
+              <>
+                <span className="inline-block h-4 w-4 mr-2 align-[-2px] rounded-full border-2 border-current border-t-transparent animate-spin" />
+                Creating game… this can take a moment
+              </>
+            ) : 'Create Game'}
+          </button>
         </form>
       </div>
     </div>

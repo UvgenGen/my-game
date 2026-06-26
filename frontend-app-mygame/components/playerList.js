@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useGameContext } from '../context/GameContext'
+import useActionGuard from '../hooks/useActionGuard'
 
 function PlayerCard({ player }) {
   const { gameState, setActivePlayerHandler, updateScore, isCreator } = useGameContext();
   const [ editing, setEditing ] = useState(false);
   const [ newScore, setNewScore ] = useState(player.score);
+  const [ selectPlayer, selecting ] = useActionGuard(setActivePlayerHandler);
 
   // Define utility function to determine card color based on props
   const getCardColorClass = () => {
@@ -87,7 +89,7 @@ function PlayerCard({ player }) {
           </button>
         )}
         {isCreator && gameState === 'SELECT_ACTIVE_USER' && (
-          <button className="btn-primary text-sm px-3 py-1" onClick={() => setActivePlayerHandler(player.user_id)}>
+          <button className="btn-primary text-sm px-3 py-1 disabled:opacity-60 disabled:cursor-not-allowed" disabled={selecting} onClick={() => selectPlayer(player.user_id)}>
             Select
           </button>
         )}

@@ -1,9 +1,14 @@
 import { useGameContext } from '../context/GameContext'
+import useActionGuard from '../hooks/useActionGuard'
 import ProgressBar from './progressBar';
 
 export default function Question() {
-  const { getQuestionData, getMediaUrl, questionTime, } = useGameContext();
+  const { getQuestionData, getMediaUrl, questionTime, isCreator, showAnswerHandler } = useGameContext();
   const questionData = getQuestionData();
+  // Interactive HTML questions are host-paced: no auto countdown, the creator
+  // reveals the answer when the player has finished the mini-game.
+  const isHtml = questionData?.question_content?.some((item) => item.type === 'html');
+  const [reveal, revealing] = useActionGuard(showAnswerHandler);
   const renderContent = (question, index) => {
     switch (question.type) {
       case 'image':
@@ -29,6 +34,17 @@ export default function Question() {
             </audio>
           </>
         )
+      case 'html':
+        return (
+          <div className="flex justify-center items-center p-2" key={index}>
+            <iframe
+              src={getMediaUrl('html', question.value)}
+              className="w-full h-[65vh] rounded-lg border border-brd bg-white"
+              sandbox="allow-scripts allow-same-origin"
+              title="interactive content"
+            />
+          </div>
+        )
       case 'text':
         return (
           <div className="p-6" key={index}>
@@ -39,11 +55,18 @@ export default function Question() {
   };
 
   return (
-    <>
-      <div className="card h-full p-4">
-        <ProgressBar max={45} current={questionTime}/>
-        {questionData?.question_content?.map((question, index) => renderContent(question, index))}
-      </div>
-    </>
+    <div className="card h-full p-4">
+      {isHtml
+        ? <div className="mb-3 text-center text-xs uppercase tracking-wide text-muted">Interactive — the host reveals the answer when ready</div>
+        : <ProgressBar max={45} current={questionTime}/>}
+      {questionData?.question_content?.map((question, index) => renderContent(question, index))}
+      {isHtml && isCreator && (
+        <div className="flex justify-center mt-4">
+          <button type="button" className="btn-primary px-6 py-2 disabled:opacity-60 disabled:cursor-not-allowed" onClick={reveal} disabled={revealing}>
+            Reveal answer
+          </button>
+        </div>
+      )}
+    </div>
   )
 }

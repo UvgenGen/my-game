@@ -4,7 +4,40 @@ import zipfile
 from django.core.exceptions import SuspiciousOperation
 from django.test import SimpleTestCase
 
-from game.api.utils import _safe_extractall
+from game.api.utils import _safe_extractall, parse_content_xml_from_zip
+from game.tests.helpers import make_siq_upload, make_siq_upload_v5
+
+
+class ParseContentXmlTests(SimpleTestCase):
+    def test_parses_legacy_atom_format(self):
+        data = parse_content_xml_from_zip(make_siq_upload(question="Q text", answer="A text"))
+        question = data[0]["themes"][0]["questions"][0]
+        self.assertEqual(question["answer"], "A text")
+        self.assertEqual(question["question_content"], [{"type": "text", "value": "Q text"}])
+
+    def test_parses_v5_params_item_format(self):
+        data = parse_content_xml_from_zip(make_siq_upload_v5())
+        question = data[0]["themes"][0]["questions"][0]
+
+        self.assertEqual(question["price"], "100")
+        self.assertEqual(question["answer"], "Right Answer")
+        # question content: video item + spoken-text item (say -> text)
+        self.assertEqual(
+            question["question_content"],
+            [
+                {"type": "video", "value": "q_clip.mp4"},
+                {"type": "html", "value": "mini_game.html"},
+                {"type": "text", "value": "Name this game"},
+            ],
+        )
+        # answer content: image item + audio item (audio -> voice, matching the frontend)
+        self.assertEqual(
+            question["answer_content"],
+            [
+                {"type": "image", "value": "a_pic.avif"},
+                {"type": "voice", "value": "a_sound.mp3"},
+            ],
+        )
 
 
 class SafeExtractAllTests(SimpleTestCase):

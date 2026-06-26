@@ -61,6 +61,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# Allow same-origin framing so question packs' embedded HTML widgets
+# (served from /media/<game>/html/) can render in an <iframe>. Default is
+# DENY; SAMEORIGIN still blocks cross-origin clickjacking.
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
 ROOT_URLCONF = 'mygame.urls'
 
 TEMPLATES = [

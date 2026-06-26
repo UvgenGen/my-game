@@ -27,9 +27,14 @@ NEXTJS_SETTINGS = {
 }
 
 
+# Use the pub/sub channel layer rather than the default RedisChannelLayer:
+# under channels_redis 4.3 + redis-py 8 the blocking-pop receive loop of
+# RedisChannelLayer raises redis.exceptions.TimeoutError ("Timeout reading
+# from redis") inside await_many_dispatch, killing live WebSocket connections.
+# RedisPubSubChannelLayer has no blocking-receive loop and avoids the issue.
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "BACKEND": "channels_redis.pubsub.RedisPubSubChannelLayer",
         "CONFIG": {
             "hosts": [("redis", 6379)],
         },

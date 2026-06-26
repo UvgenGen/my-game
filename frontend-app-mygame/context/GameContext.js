@@ -85,7 +85,11 @@ export function GameProvider({ children, gameId }) {
   }
 
   const getMediaUrl = (type, file) => {
-    const fileName = encodeURIComponent(file.slice(1));
+    // Legacy SIGame packs prefix resource refs with '@' (e.g. "@image.png");
+    // newer (v5) packs use bare filenames. Strip the '@' only when present so
+    // we don't chop the first character off real filenames.
+    const name = file.startsWith('@') ? file.slice(1) : file;
+    const fileName = encodeURIComponent(name);
     return `/media/${gameId}/${type}/${fileName}`
   }
 
@@ -122,6 +126,14 @@ export function GameProvider({ children, gameId }) {
       JSON.stringify({
         type: "answering",
         user_id: userId,
+      })
+    );
+  }
+
+  const showAnswerHandler = () => {
+    client.send(
+      JSON.stringify({
+        type: "show_answer"
       })
     );
   }
@@ -182,6 +194,7 @@ export function GameProvider({ children, gameId }) {
     setRoundHandler,
     answerHandler,
     reviewAnswerHandler,
+    showAnswerHandler,
     showQuestionHandler,
     getMediaUrl,
   };

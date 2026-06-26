@@ -29,6 +29,17 @@ export default function Answer() {
             </audio>
           </>
         )
+      case 'html':
+        return (
+          <div className="flex justify-center items-center p-2" key={index}>
+            <iframe
+              src={getMediaUrl('html', answer.value)}
+              className="w-full h-[65vh] rounded-lg border border-brd bg-white"
+              sandbox="allow-scripts allow-same-origin"
+              title="interactive content"
+            />
+          </div>
+        )
       case 'text':
         return (
           <div className="p-6" key={index}>

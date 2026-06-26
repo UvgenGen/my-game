@@ -1,11 +1,18 @@
 import { useGameContext } from '../context/GameContext'
+import useActionGuard from '../hooks/useActionGuard'
 
 
 function PlayerBar() {
   const { answerHandler } = useGameContext();
+  const [buzz, busy] = useActionGuard(answerHandler, 1500);
   return (
     <div className="card p-4 mb-2">
-      <button type="button" className="btn-buzz" onClick={() => answerHandler()}>
+      <button
+        type="button"
+        className="btn-buzz disabled:opacity-60 disabled:cursor-not-allowed"
+        onClick={buzz}
+        disabled={busy}
+      >
         Buzz
       </button>
     </div>

@@ -120,7 +120,12 @@ class GameConsumer(AsyncWebsocketConsumer):
         # when an incorrect review returns to SHOW_QUESTION (that countdown is
         # already running and must keep its remaining time).
         if msg_type == engine.EV_SHOW_QUESTION:
-            self._restart_timer("question", self._question_countdown())
+            # Interactive HTML questions are host-paced: the creator reveals the
+            # answer manually, so don't start the auto countdown that would cut
+            # the mini-game off and reveal the answer on a fixed timer.
+            game = await self.get_game(self.game_id)
+            if not game.is_active_question_html():
+                self._restart_timer("question", self._question_countdown())
         # Any accepted event that lands the game in SHOW_ANSWER must reveal the
         # answer to clients and start the answer countdown. A correct review_answer
         # transitions straight to SHOW_ANSWER, and the frontend does not refetch on

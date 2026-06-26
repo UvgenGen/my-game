@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Cookies from 'js-cookie';
 import { w3cwebsocket as W3CWebSocket } from 'websocket';
 import Message from './message';
@@ -8,7 +8,9 @@ export default function Chat({ gameId }) {
   const [newPost, setNewPost] = useState('');
   const [isChatCollapsed, setIsChatCollapsed] = useState(true);
 
-  const client = new W3CWebSocket(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/ws/${gameId}/`);
+  // Hold a single WebSocket per gameId. Created in the effect below (not in the
+  // component body) so re-renders don't spawn new sockets and leak connections.
+  const clientRef = useRef(null);
 
   const fetchPosts = async () => {
     try {
@@ -23,6 +25,9 @@ export default function Chat({ gameId }) {
   useEffect(() => {
     fetchPosts();
 
+    const client = new W3CWebSocket(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/ws/${gameId}/`);
+    clientRef.current = client;
+
     client.onopen = () => {
       console.log(`WebSocket Chat Client Connected: ${gameId}`);
     };
@@ -32,6 +37,11 @@ export default function Chat({ gameId }) {
       if (dataFromServer) {
         addNewMessage(dataFromServer.message);
       }
+    };
+
+    return () => {
+      clientRef.current = null;
+      client.close();
     };
   }, [gameId]);
 
@@ -71,7 +81,7 @@ export default function Chat({ gameId }) {
         body: JSON.stringify({ message, game: gameId }),
       });
       const data = await response.json();
-      client.send(
+      clientRef.current?.send(
         JSON.stringify({
           type: 'send_message',
           message: data,

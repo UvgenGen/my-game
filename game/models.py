@@ -54,3 +54,16 @@ class Game(models.Model):
 
     def is_player_can_answer(self, user_id):
         return self.is_player(user_id) and not self.players.get(user__id=user_id).answered
+
+    def is_active_question_html(self):
+        """True if the active question's content includes an interactive HTML
+        widget. Such questions are host-paced, so the consumer skips the
+        automatic question countdown / answer reveal for them."""
+        aq = self.active_question or {}
+        try:
+            question = (
+                self.data[aq["round_id"]]["themes"][aq["theme_id"]]["questions"][aq["question_id"]]
+            )
+        except (KeyError, IndexError, TypeError):
+            return False
+        return any(item.get("type") == "html" for item in question.get("question_content", []))
