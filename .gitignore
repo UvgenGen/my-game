@@ -308,3 +308,8 @@ GitHub.sublime-settings
 !.vscode/launch.json 
 !.vscode/extensions.json 
 .history
+
+# Brainstorming visual-companion scratch
+.superpowers/
+.playwright-mcp/
+test_files/

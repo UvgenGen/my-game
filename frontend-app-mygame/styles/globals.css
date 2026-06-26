@@ -1,3 +1,60 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html, body {
+    @apply bg-night text-ink font-sans;
+  }
+  h1, h2, h3, h4, h5 {
+    @apply font-display;
+  }
+  /* Neon scrollbar */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: #0a0f1c; }
+  ::-webkit-scrollbar-thumb { background: #1d2942; border-radius: 6px; }
+  ::-webkit-scrollbar-thumb:hover { background: #2dd4ff; }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center rounded-lg px-4 py-2 font-medium
+           transition-all duration-150 cursor-pointer select-none;
+  }
+  .btn-primary {
+    @apply btn bg-cyan/15 text-cyan border border-cyan/60 hover:bg-cyan hover:text-night
+           hover:shadow-glow-cyan;
+  }
+  .btn-ghost {
+    @apply btn bg-surface-2 text-muted border border-brd hover:text-ink hover:border-cyan/60;
+  }
+  .btn-buzz {
+    @apply btn w-full h-24 text-2xl font-display font-bold tracking-widest uppercase
+           bg-magenta/20 text-magenta border-2 border-magenta rounded-xl
+           hover:bg-magenta hover:text-night hover:shadow-glow-magenta
+           active:scale-[.98] animate-buzz-glow;
+  }
+  .card {
+    @apply bg-surface border border-brd rounded-xl shadow-lg;
+  }
+  .tile {
+    @apply flex items-center justify-center text-center font-display font-extrabold
+           bg-surface text-cyan border border-magenta/70 rounded-md cursor-pointer
+           transition-all duration-150 hover:shadow-glow-magenta hover:border-magenta;
+  }
+  .tile--done {
+    @apply bg-surface-2 text-brd border-brd cursor-default shadow-none hover:shadow-none;
+  }
+  .input {
+    @apply w-full px-4 py-2 rounded-lg bg-surface-2 text-ink border border-brd
+           placeholder-muted focus:outline-none focus:border-cyan focus:ring-1 focus:ring-cyan;
+  }
+  .timerbar {
+    @apply w-full bg-surface-2 rounded-full h-2.5 overflow-hidden;
+  }
+  .timerbar__fill {
+    @apply h-full rounded-full;
+    background-image: linear-gradient(90deg, #2dd4ff, #ff4ecd);
+    box-shadow: 0 0 8px rgba(45,212,255,.6);
+  }
+}

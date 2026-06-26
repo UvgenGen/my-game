@@ -1,54 +1,36 @@
 export default function GameList(context) {
     const { games } = context;
-
     return (
-      <>
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col items-center justify-center h-screen">
-            <h1 className="text-4xl mb-8 text-white">Game list</h1>
-            <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                        <tr>
-                            <th scope="col" className="px-6 py-3">
-                                id
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                Name
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                Players
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                Action
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {games.map((game) => (
-                            // <a href={`/game/${game.id}`} key={game.id} className="bg-blue-500 bg-opacity-50 hover:bg-opacity-70 text-white font-bold py-2 px-4 rounded mb-4 w-48">{game.title}</a>
-                            <tr key={game.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                <td className="px-6 py-4">
-                                    {game.id}
-                                </td>
-                                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    {game.title}
-                                </th>
-                                <td className="px-6 py-4">
-                                    {game.players.length}/{game.max_player_count}
-                                </td>
-                                <td className="px-6 py-4">
-                                    <a href={`/game/${game.id}`} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">connect</a>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+      <div className="container mx-auto px-4">
+        <div className="flex flex-col items-center min-h-[80vh] pt-16">
+          <h1 className="font-display text-4xl font-bold mb-8 text-ink">Game List</h1>
+          <div className="w-full max-w-3xl card overflow-hidden">
+            <table className="w-full text-sm text-left">
+              <thead className="text-xs uppercase text-muted bg-surface-2 border-b border-brd">
+                <tr>
+                  <th scope="col" className="px-6 py-3">id</th>
+                  <th scope="col" className="px-6 py-3">Name</th>
+                  <th scope="col" className="px-6 py-3">Players</th>
+                  <th scope="col" className="px-6 py-3">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {games.map((game) => (
+                  <tr key={game.id} className="border-b border-brd hover:bg-surface-2 transition-colors">
+                    <td className="px-6 py-4 text-muted">{game.id}</td>
+                    <th scope="row" className="px-6 py-4 font-medium text-ink whitespace-nowrap">{game.title}</th>
+                    <td className="px-6 py-4 text-muted">{game.players.length}/{game.max_player_count}</td>
+                    <td className="px-6 py-4">
+                      <a href={`/game/${game.id}`} className="font-medium text-cyan hover:[text-shadow:0_0_10px_rgba(45,212,255,.7)]">connect</a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
-      </>
-    )
+      </div>
+    );
 }
 
 

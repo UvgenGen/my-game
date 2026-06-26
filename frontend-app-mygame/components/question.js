@@ -31,8 +31,8 @@ export default function Question() {
         )
       case 'text':
         return (
-          <div className="p-5" key={index}>
-            <p className="font-normal text-gray-700 mb-3 dark:text-gray-400">{question.value}</p>
+          <div className="p-6" key={index}>
+            <p className="font-display text-2xl leading-relaxed text-ink text-center">{question.value}</p>
           </div>
         )
     }
@@ -40,7 +40,7 @@ export default function Question() {
 
   return (
     <>
-      <div className="bg-white shadow-md border border-gray-200 h-full rounded-lg dark:bg-gray-800 dark:border-gray-700">
+      <div className="card h-full p-4">
         <ProgressBar max={45} current={questionTime}/>
         {questionData?.question_content?.map((question, index) => renderContent(question, index))}
       </div>

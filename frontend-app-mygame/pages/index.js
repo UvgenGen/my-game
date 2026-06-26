@@ -1,13 +1,14 @@
 export default function Menu() {
   return (
-    <>
-      <div className="container mx-auto px-4">
-        <div className="flex flex-col items-center justify-center h-screen">
-          <h1 className="text-4xl mb-8 text-white">Game Menu</h1>
-          <a href="/game/create" className="border-2 border-blue-600 rounded-lg px-3 py-2 text-blue-400 cursor-pointer hover:bg-blue-600 hover:text-blue-200 py-2 px-4 mb-4 w-48">Create Game</a>
-          <a href="/game/list" className="border-2 border-blue-600 rounded-lg px-3 py-2 text-blue-400 cursor-pointer hover:bg-blue-600 hover:text-blue-200 py-2 px-4 mb-4 w-48">Play with friends</a>
+    <div className="container mx-auto px-4">
+      <div className="flex flex-col items-center justify-center min-h-[80vh]">
+        <h1 className="font-display text-5xl font-bold mb-2 text-ink">Game Menu</h1>
+        <p className="text-muted mb-10">Buzz in. Outsmart your friends.</p>
+        <div className="flex flex-col gap-4 w-64">
+          <a href="/game/create" className="btn-primary text-lg py-3">Create Game</a>
+          <a href="/game/list" className="btn-primary text-lg py-3">Play with friends</a>
         </div>
       </div>
-    </>
-  )
+    </div>
+  );
 }

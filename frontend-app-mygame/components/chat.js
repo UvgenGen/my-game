@@ -83,24 +83,24 @@ export default function Chat({ gameId }) {
   };
 
   return (
-    <div className="w-full p-4 border border-gray-200 rounded-lg shadow sm:p-8 dark:border-gray-700">
+    <div className="card p-4">
       <button
         type="button"
-        className="text-gray-300 mb-4 bg-gray-800 hover:bg-gray-600 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+        className="btn-ghost text-sm mb-4"
         onClick={toggleChat}
       >
         {isChatCollapsed ? 'Expand Chat' : 'Collapse Chat'}
       </button>
       <div className={`${isChatCollapsed ? 'hidden' : 'block'}`}>
-        <div className="mb-6">
-          <div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+        <div className="mb-4">
+          <div className="mb-4 card p-2 bg-surface-2">
             <label htmlFor="comment" className="sr-only">
               Your comment
             </label>
             <input
               id="comment"
               type="text"
-              className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
+              className="input border-0 bg-transparent focus:ring-0"
               placeholder="Write a comment..."
               value={newPost}
               onKeyPress={handleKeyPress}
@@ -109,13 +109,13 @@ export default function Chat({ gameId }) {
           </div>
           <button
             type="button"
-            className="text-gray-300 bg-gray-800 hover:bg-gray-600 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+            className="btn-primary text-sm"
             onClick={handlePostSubmit}
             >
             Send
           </button>
         </div>
-        <div className="max-h-64 sm:max-h-76 overflow-y-scroll">
+        <div className="max-h-64 sm:max-h-76 overflow-y-scroll space-y-2">
           {postsList?.map((post, index) => (
             <Message key={index} post={post} />
             ))}

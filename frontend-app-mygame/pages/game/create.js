@@ -41,73 +41,36 @@ const GameForm = () => {
   };
 
   return (
-    <>
-      <div className="container mx-auto px-4">
-        <div className="flex flex-col items-center justify-center h-screen">
-          <h1 className="text-4xl mb-8 text-white">Create Game</h1>
-          <form onSubmit={handleSubmit}>
-      <div className="mb-4">
-        <label htmlFor="title" className="block text-sm font-medium text-white">
-          Title
-        </label>
-        <input
-          type="text"
-          id="title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="mt-1 px-4 py-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-        />
+    <div className="container mx-auto px-4">
+      <div className="flex flex-col items-center min-h-[80vh] pt-16">
+        <h1 className="font-display text-4xl font-bold mb-8 text-ink">Create Game</h1>
+        <form onSubmit={handleSubmit} className="card p-8 w-full max-w-md">
+          <div className="mb-5">
+            <label htmlFor="title" className="block text-sm font-medium text-muted mb-1">Title</label>
+            <input type="text" id="title" value={title} onChange={(e) => setTitle(e.target.value)} className="input" />
+          </div>
+          <div className="mb-5">
+            <label htmlFor="file" className="block text-sm font-medium text-muted mb-1">Pack file (.siq)</label>
+            <input type="file" id="file" onChange={(e) => setFile(e.target.files[0])}
+              className="block w-full text-sm text-muted file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-cyan/15 file:text-cyan hover:file:bg-cyan hover:file:text-night file:cursor-pointer" />
+          </div>
+          <div className="mb-5">
+            <label htmlFor="userCount" className="block text-sm font-medium text-muted mb-1">Player count</label>
+            <div className="flex items-center gap-3">
+              <input type="range" id="userCount" min="2" max="8" value={userCount}
+                onChange={(e) => setUserCount(parseInt(e.target.value))}
+                className="w-full h-2 appearance-none rounded-full bg-surface-2 accent-cyan outline-none" />
+              <div className="w-8 text-center font-display font-bold text-cyan">{userCount}</div>
+            </div>
+          </div>
+          <div className="mb-6">
+            <label htmlFor="password" className="block text-sm font-medium text-muted mb-1">Room password</label>
+            <input type="text" id="password" value={password} onChange={(e) => setPassword(e.target.value)} className="input" />
+          </div>
+          <button type="submit" className="btn-primary w-full py-3">Create Game</button>
+        </form>
       </div>
-      <div className="mb-4">
-        <label htmlFor="file" className="block text-sm font-medium text-white">
-          File
-        </label>
-        <input
-          type="file"
-          id="file"
-          onChange={(e) => setFile(e.target.files[0])}
-          className="mt-1 text-white"
-        />
-      </div>
-      <div className="mb-4">
-        <label htmlFor="userCount" className="block text-sm font-medium text-white">
-          User Count
-        </label>
-        <div className="flex items-center mt-1">
-          <input
-            type="range"
-            id="userCount"
-            min="2"
-            max="8"
-            value={userCount}
-            onChange={(e) => setUserCount(parseInt(e.target.value))}
-            className="w-full h-3 appearance-none rounded-md bg-indigo-500 outline-none"
-          />
-          <div className="ml-2 w-8 text-center text-white">{userCount}</div>
-        </div>
-      </div>
-      <div className="mb-4">
-        <label htmlFor="password" className="block text-sm font-medium text-white">
-          Password for Game Room
-        </label>
-        <input
-          type="text"
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="mt-1 px-4 py-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-        />
-      </div>
-      <button
-        type="submit"
-        className="border-2 border-blue-600 rounded-lg px-3 py-2 text-blue-400 cursor-pointer hover:bg-blue-600 hover:text-blue-200"
-      >
-        Create Game
-      </button>
-    </form>
-        </div>
-      </div>
-    </>
+    </div>
   );
 };
 

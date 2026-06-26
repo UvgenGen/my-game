@@ -31,8 +31,8 @@ export default function Answer() {
         )
       case 'text':
         return (
-          <div className="p-5" key={index}>
-            <p className="font-normal text-gray-700 mb-3 dark:text-gray-400">{answer.value}</p>
+          <div className="p-6" key={index}>
+            <p className="font-display text-2xl leading-relaxed text-ink text-center">{answer.value}</p>
           </div>
         )
     }
@@ -40,11 +40,11 @@ export default function Answer() {
 
   return (
     <>
-      <div className="bg-white shadow-md border border-gray-200 h-full rounded-lg dark:bg-gray-800 dark:border-gray-700">
+      <div className="card h-full p-4">
         <ProgressBar max={5} current={answerTime}/>
         {questionData?.answer_content?.map((answer, index) => renderContent(answer, index))}
-        <div className="p-5">
-          <p className="font-normal text-gray-700 mb-3 dark:text-gray-400 text-center">{questionData?.answer}</p>
+        <div className="p-6">
+          <p className="font-display text-3xl text-correct text-center [text-shadow:0_0_14px_rgba(6,214,160,.5)]">{questionData?.answer}</p>
         </div>
       </div>
     </>
